@@ -1,0 +1,77 @@
+#! /bin/bash
+
+shopt -s expand_aliases
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+function main() {
+    [[ $# -eq 0 ]] && usage && return;
+
+    local options=$( getopt -o f:rs --long file:,array,assoc -- "$@")
+    local file=""; local format=""
+
+    [[ $? -ne 0 ]] && {
+        echo "Incorrect options provided"
+        exit 1
+    }
+
+    eval set -- "${options}"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -f | --file) file="$2"; shift 2 ;;
+            -r | --array) format="array"; shift 1 ;;
+            -s | --assoc) format="assoc"; shift 1 ;;
+            --) shift; break ;;
+            *) usage; break ;;
+        esac
+    done
+
+    if [[ -f "${file}" ]]; then
+        stringify "${format}" "${file}"
+    else
+        echo -e "\nFile ${file} not found\n"
+    fi
+}
+
+
+function stringify() {
+    case "$1" in
+        array) stringify_array "${file}" ;;
+        assoc) stringify_assoc "${file}" ;;
+        *) return ;;
+    esac
+}
+
+
+function stringify_assoc() {
+    readonly file="$1"
+
+    readarray -t lines < "${file}"
+    local string; local key; local value; local substr
+
+    for line in "${lines[@]}"; do
+        key="${line%%=*}"
+        value="${line##*=}"
+
+        if [[ -z "${string}" ]]; then
+            substr="[${key}]=\"${value}\""
+        else
+            substr="[${key}]=\"${value}\":"
+        fi
+
+        string="${substr}${string}"
+    done
+
+    readonly string
+    echo "${string}"
+}
+
+
+function usage() {
+    echo "hi"
+}
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x

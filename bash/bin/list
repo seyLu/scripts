@@ -1,0 +1,62 @@
+#! /bin/bash
+
+shopt -s expand_aliases
+source "${_SCRIPTS_PATH}/__init__"
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#-------------------------------------------------------------------------#
+# Print current working dir and list its file contents
+# Arguments:
+#   Key to stringified Associative Array _PATHS
+# Outputs:
+#   Mapped file path and its contents
+#-------------------------------------------------------------------------#
+
+function main() {
+    echo
+
+    if [[ $# -eq 1 ]]; then
+        readonly key="$1"
+        readonly path=$(
+            case "${key}" in
+                dir | .) pwd ;;
+                scripts) echo "${_SCRIPTS_PATH}" ;;
+                *) extract_value_assoc "${_PATHS}" ;;
+            esac
+        )
+
+        readonly invalid_path=$( list "${key}" "${path}" 2>/dev/null )
+        readonly reserved="dir|\.|scripts"
+
+        if [[ invalid_path && "${key}" =~ "${reserved}" ]]; then
+            echo "$1"; ls "$1"
+        else
+            echo "${path}"
+            list "${key}" "${path}"
+        fi
+    else
+        pwd; ls
+    fi
+
+    echo
+}
+
+
+function list() {
+    case "${key}" in
+        scripts) list_scripts "${path}" ;;
+        *) ls "${path}" ;;
+    esac
+}
+
+function list_scripts() {
+    ls "$1" -p -I "_*" \
+        | grep -v "/" \
+        | format_spaces \
+        | sed 's/ *$//g'
+}
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x

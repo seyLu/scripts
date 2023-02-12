@@ -1,0 +1,12 @@
+#! /bin/bash
+
+[[ -z "${_DATA_GLOBAL_PATH}" ]] && {
+    # Global Data Path
+    readonly _DATA_GLOBAL_PATH="${_SCRIPTS_PATH}/data/global"
+}
+
+[[ -z "${_PATHS}" ]] && {
+    # Read from Global Data text file and Populate _PATHS
+    readonly _PATHS=$( skim -sf "${_DATA_GLOBAL_PATH}/paths.txt" )
+    export _PATHS
+}
