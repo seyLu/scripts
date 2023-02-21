@@ -1,0 +1,71 @@
+#! /bin/bash
+
+shopt -s expand_aliases
+source "${_SCRIPTS_PATH}/__init__"
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#-------------------------------------------------------------------------#
+# Print Associative Arrays
+# Other formats will be displayed in associative array format
+# Arguments:
+#   Associative Arrays
+# Outputs:
+#   Key=Value Pair
+#-------------------------------------------------------------------------#
+
+function main() {
+    if [[ $# -lt 1 ]]; then
+        echo "At least one argument required"
+    fi
+
+    while [[ $# -gt 0 ]]; do
+        echo
+
+        temp=( [key]=value [key1]=value1 )
+        # temp=( value value1 )
+        # temp="value"
+
+        echo $temp
+
+        # set -x
+        # readonly type=$( typeof "$1" )
+        # set +x
+        # if [[ "${type}" == "-A" ]]; then
+        #     declare -A array="${temp}"
+        # fi
+
+
+        # echo " ${1}" | red-grep "[[:graph:]]"
+        # for key in "${!array[@]}"; do
+        #     echo " -> [${key}]=\"${array[$key]}\"" \
+        #         | cyan-grep -e "\[[^]]*\]"
+        # done
+
+        shift
+        echo
+    done
+}
+
+
+# Returns type of Argument ( int | string | array | associative array )
+function typeof() {
+    # local var="$1"
+
+    # if [[ "${var[1]}" != "" ]]; then
+    # if [[ "${var[1]}" =~ ^-?[0-9]+$ ]]; then
+    #     echo "The argument is an array."
+    # elif
+    #     echo "The argument is"
+    # elif [[ "${var}" =~ ^-?[0-9]+$ ]]; then
+    #     echo "The argument is an integer."
+    # else
+    #     echo "The argument is a string."
+    # fi
+    return
+}
+
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x

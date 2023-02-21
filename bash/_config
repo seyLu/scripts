@@ -7,4 +7,8 @@
 [[ -z "${_DEBUG}" ]] && \
     _DEBUG="false"
 
+[[ -z "${_PYTHON}" ]] && \
+    _PYTHON="python3.11"
+
 export _DEBUG
+export _PYTHON

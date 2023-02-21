@@ -27,12 +27,9 @@ function list { execute "list" "$@"; }
 # Read file, store into array/associative array, then stringify
 function skim { execute "skim" "$@"; }
 
+# Compile markdown
+function mdcompile { execute "mdcompile" "$@"; }
+
 
 # _paths require skim to be loaded first
 source "${_SCRIPTS_PATH}/_paths"
-
-
-
-
-
-

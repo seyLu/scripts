@@ -57,6 +57,7 @@ function list_scripts() {
         | sed 's/ *$//g'
 }
 
+
 main "$@"
 
 [[ "$_DEBUG" == "true" ]] && set +x

@@ -7,7 +7,7 @@ shopt -s expand_aliases
 function main() {
     [[ $# -eq 0 ]] && usage && return;
 
-    local options=$( getopt -o f:rs --long file:,array,assoc -- "$@")
+    local options=$( getopt -o f:aA --long file:,array,assoc -- "$@")
     local file=""; local format=""
 
     [[ $? -ne 0 ]] && {
@@ -20,8 +20,8 @@ function main() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -f | --file) file="$2"; shift 2 ;;
-            -r | --array) format="array"; shift 1 ;;
-            -s | --assoc) format="assoc"; shift 1 ;;
+            -a | --array) format="array"; shift 1 ;;
+            -A | --assoc) format="assoc"; shift 1 ;;
             --) shift; break ;;
             *) usage; break ;;
         esac
@@ -69,8 +69,9 @@ function stringify_assoc() {
 
 
 function usage() {
-    echo "hi"
+    echo "usage: WIP"
 }
+
 
 main "$@"
 
