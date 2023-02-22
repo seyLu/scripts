@@ -5,14 +5,14 @@ source "${_SCRIPTS_PATH}/__init__"
 
 [[ "$_DEBUG" == "true" ]] && set -x
 
-#-------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
 # Print Associative Arrays
 # Other formats will be displayed in associative array format
 # Arguments:
 #   Associative Arrays
 # Outputs:
 #   Key=Value Pair
-#-------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
 
 function main() {
     if [[ $# -lt 1 ]]; then

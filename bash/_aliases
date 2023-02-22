@@ -39,23 +39,19 @@ alias ve="
 function pdb() { "${_PYTHON}" -m pdb "${1}.py"; }
 
 # Python Formatter
-function blk() { black "${1}.py"; }
-
-# Generate Readme
-function readme() {
-    if [[ $# -eq 1 && "$1" == "init" ]]; then
-        touch main.md
-        mkdir sections
-    elif [[ -f "main.md" ]]; then
-        mdcompile
-        mv compiled.md ../README.md
-
-        echo "Succesfully compiled markdown and generated README"
-    else
-        echo "file: main.md not found"
+function blk() {
+    if [[ $# -eq 1 ]]; then
+        black "${1}.py"
+    elif [[ "$1" == "-d" ]]; then
+        black "${2}/"
     fi
 }
 
-
-
-
+# pytest
+function pyt() {
+    if [[ -f "test_${1}.py"  ]]; then
+        pytest "test_${1}.py"
+    else
+        pytest "$1"
+    fi
+}

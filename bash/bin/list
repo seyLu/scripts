@@ -5,13 +5,13 @@ source "${_SCRIPTS_PATH}/__init__"
 
 [[ "$_DEBUG" == "true" ]] && set -x
 
-#-------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
 # Print current working dir and list its file contents
 # Arguments:
 #   Key to stringified Associative Array _PATHS
 # Outputs:
 #   Mapped file path and its contents
-#-------------------------------------------------------------------------#
+#------------------------------------------------------------------------#
 
 function main() {
     echo
