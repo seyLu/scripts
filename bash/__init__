@@ -25,7 +25,7 @@ function execute() {
 function list { execute "list" "$@"; }
 
 # Read file, store into array/associative array, then stringify
-function skim { execute "skim" "$@"; }
+function skim { execute "skimm" "$@"; }
 
 # Compile markdown
 function mdcompile { execute "mdcompile" "$@"; }

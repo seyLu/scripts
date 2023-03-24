@@ -10,5 +10,9 @@
 [[ -z "${_PYTHON}" ]] && \
     _PYTHON="python3.11"
 
+[[ -z "${_EDITOR}" ]] && \
+    _EDITOR="subl"
+
 export _DEBUG
 export _PYTHON
+export _EDITOR

@@ -3,6 +3,9 @@
 # Useful for debugging
 alias reload=". ~/.bashrc"
 
+# Open scripts directory on editor
+alias shell="${_EDITOR} ${_SCRIPTS_PATH}/../"
+
 # Colored ls and grep by default
 alias ls="ls --color=yes"
 alias grep="grep --color=always"
@@ -17,41 +20,44 @@ alias magenta-grep="GREP_COLOR='1;35' grep --color=always"
 alias    cyan-grep="GREP_COLOR='1;36' grep --color=always"
 alias   white-grep="GREP_COLOR='1;37' grep --color=always"
 
+
 # Latest Python
 function py() {
-    [[ $# -eq 0 ]] && { "${_PYTHON}"; return; }
-
-    [[ $# -eq 1 ]] \
-        && { "${_PYTHON}" "${1}.py"; return; } \
-        || { "${_PYTHON}" "${1}.py" "${@:2}"; return; }
-}
-
-alias pyy="${_PYTHON}"
-alias pip="${_PYTHON} -m pip"
-
-# Python Virtual Environment
-alias ve="
-    [[ ! -d .venv ]] && "${_PYTHON}" -m venv .venv --upgrade-deps
-    source .venv/bin/activate
-"
-
-# Python Debugger
-function pdb() { "${_PYTHON}" -m pdb "${1}.py"; }
-
-# Python Formatter
-function blk() {
-    if [[ $# -eq 1 ]]; then
-        black "${1}.py"
-    elif [[ "$1" == "-d" ]]; then
-        black "${2}/"
+    if [[ -f "${1}.py" ]]; then
+        "${_PYTHON}" "${1}.py" "${@:2}"
+    else
+        "${_PYTHON}" "${@}"
     fi
 }
 
-# pytest
+
+alias pym="${_PYTHON} -m"
+alias pip="pym pip"
+
+# Python Virtual Environment
+alias ve="
+    [[ ! -d .venv ]] && pym venv .venv --upgrade-deps
+    source .venv/bin/activate
+"
+
+
+# Python Pytest
 function pyt() {
     if [[ -f "test_${1}.py"  ]]; then
-        pytest "test_${1}.py"
+        pytest "test_${1}.py" "${@:2}"
     else
-        pytest "$1"
+        pytest "${1}" "${@:2}"
+    fi
+}
+
+
+# Python Black Formatter with Isort
+function blk() {
+    if [[ -f "${1}.py"  ]]; then
+        isort "${1}.py"
+        black "${1}.py" "${@:2}"
+    else
+        isort "${1}"
+        black "${1}" "${@:2}"
     fi
 }
