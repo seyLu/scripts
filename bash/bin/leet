@@ -33,7 +33,7 @@ function leet() {
 
 
 function placeholder() {
-cat > "${problem_name}.py" <<-EOF
+read -rd "" placeholder_content <<-EOF
 def main():
     print(${problem_name}())
     print(${problem_name}())
@@ -47,23 +47,15 @@ if __name__ == "__main__":
     main()
 EOF
 
-cat > "${problem_name}_soln.py" <<-EOF
+read -rd "" empty_python_docstring <<-"EOF"
 """
 
 """
-
-def main():
-    print(${problem_name}())
-    print(${problem_name}())
-
-
-def ${problem_name}() -> None:
-    pass
-
-
-if __name__ == "__main__":
-    main()
 EOF
+
+    echo "${placeholder_content}" > "${problem_name}.py"
+    echo -e "${empty_python_docstring}\n" > "${problem_name}_soln.py"
+    echo "${placeholder_content}" >> "${problem_name}_soln.py"
 }
 
 
