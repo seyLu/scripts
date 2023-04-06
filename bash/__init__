@@ -33,6 +33,9 @@ function mdcompile { execute "mdcompile" "$@"; }
 # Generate README
 function readme { execute "readmee" "$@"; }
 
+# Simplify doing Leetcode
+function leet { execute "leet" "$@"; }
+
 
 # _paths require skim to be loaded first
 source "${_SCRIPTS_PATH}/_paths"

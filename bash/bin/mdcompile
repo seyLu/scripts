@@ -2,7 +2,7 @@
 
 [[ "$_DEBUG" == "true" ]] && set -x
 
-main() {
+function main() {
     local input="main.md"
     local output="compiled.md"
     local dir="sections"
@@ -37,7 +37,7 @@ main() {
 }
 
 
-process() {
+function process() {
     readonly input="$1"
     readonly output="$2"
     readonly dir="$3"
@@ -60,7 +60,7 @@ process() {
 }
 
 
-compile() {
+function compile() {
     local _file="$1"
     local _output="$2"
 

@@ -1,0 +1,79 @@
+#! /bin/bash
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#------------------------------------------------------------------------#
+# Simplify folder and file creation when working with leetcode
+# Arguments:
+#   Leetcode problem name
+# Outputs:
+#   1 folder + 2 files with placeholder
+#------------------------------------------------------------------------#
+
+function main() {
+    [[ $# -eq 0 ]] && usage && return;
+
+    while [[ $# -gt 0 ]]; do
+        leet "$1"
+        shift
+    done
+}
+
+
+function leet() {
+    local problem_name="$1"
+
+    mkdir "${problem_name}"
+    cd "${problem_name}"
+    touch "${problem_name}.py" "${problem_name}_soln.py"
+
+    placeholder "${problem_name}"
+    cd ..
+}
+
+
+function placeholder() {
+cat > "${problem_name}.py" <<-EOF
+def main():
+    print(${problem_name}())
+    print(${problem_name}())
+
+
+def ${problem_name}() -> None:
+    pass
+
+
+if __name__ == "__main__":
+    main()
+EOF
+
+cat > "${problem_name}_soln.py" <<-EOF
+"""
+
+"""
+
+def main():
+    print(${problem_name}())
+    print(${problem_name}())
+
+
+def ${problem_name}() -> None:
+    pass
+
+
+if __name__ == "__main__":
+    main()
+EOF
+}
+
+
+function usage() {
+    echo
+    echo "Usage: At least one argument required"
+}
+
+
+main "$@"
+
+
+[[ "$_DEBUG" == "true" ]] && set +x
