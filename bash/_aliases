@@ -31,6 +31,12 @@ function py() {
 }
 
 
+# Change Python version
+function pyc() {
+    _PYTHON="python${1}"
+}
+
+
 alias pym="${_PYTHON} -m"
 alias pip="pym pip"
 
@@ -61,3 +67,4 @@ function blk() {
         black "${1}" "${@:2}"
     fi
 }
+
