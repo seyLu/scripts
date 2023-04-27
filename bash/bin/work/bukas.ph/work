@@ -1,0 +1,160 @@
+#! /bin/bash
+
+source "${_SCRIPTS_PATH}/_paths"
+source "${_SCRIPTS_PATH}/_helpers"
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#------------------------------------------------------------------------#
+# Collection of Bukas.ph scripts
+#------------------------------------------------------------------------#
+readonly RED="\033[0;31m"
+readonly CYAN="\033[0;36m"
+readonly END_COLOR="\033[0m"
+
+readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )/Erudifi"
+readonly -a valid_repos=(
+    "mono-backend"
+    "borrower-app"
+)
+declare -l repo=$(
+    dir=$( basename "${PWD}" )
+
+    if [[ "${valid_repos[@]}" =~ "${dir}" ]]; then
+        echo "${dir}"
+    else
+        echo "${valid_repos[0]}"
+    fi
+)
+
+
+function main() {
+    [[ $# -eq 0 ]] && list_config && return;
+
+    choices "${work_path}" "${repo}" "$@"
+}
+
+
+function choices() {
+    shift 2
+    local options=$(
+        getopt -o r:x:b:t:X --long repo:,start:,bash:,test:,stop -- "$@"
+    )
+
+    [[ $? -ne 0 ]] && {
+        echo "Incorrect options provided"
+        exit 1
+    }
+
+    eval set -- "${options}"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -r | --repo) change_dir "${2,,}"; break ;;
+            -x | --start) docker_start "${2,,}"; break ;;
+            -b | --bash) docker_bash "${2,,}"; break ;;
+            -t | --test) docker_test "${2,,}"; break ;;
+            -X | --stop) docker_stop; break ;;
+            --) shift; break ;;
+            *) list_config; break ;;
+        esac
+    done
+}
+
+
+function change_dir() {
+    local repo_path="${work_path}/"
+
+    case "$1" in
+        be | mono-backend) repo_path+="mono-backend" ;;
+        fe | borrower-app) repo_path+="borrower-app" ;;
+        *) list_valid_repos; return ;;
+    esac
+
+    gnome-terminal --working-directory="${repo_path}" --no-environment --tab
+}
+
+
+function docker_start() {
+    local app=$( get_app "$1" )
+    [[ -z "${app}" ]] && { list_config; return; }
+
+    case "${repo}" in
+        mono-backend)
+            docker-compose -f "docker-compose.${app}.yml" up -d ;;
+        borrower-app)
+            . ~/.nvm/nvm.sh
+            nvm use lts/gallium
+            npm run dev:web
+            ;;
+        *) list_valid_repos; return ;;
+    esac
+}
+
+
+function docker_bash() {
+    local backend=$( get_backend "$1" )
+    [[ -z "${backend}" ]] && { list_config; return; }
+
+    docker-compose exec "${backend}" bash
+}
+
+
+function docker_test() {
+    local backend=$( get_backend "$1" )
+    [[ -z "${backend}" ]] && { list_config; return; }
+
+    docker-compose exec -T "${backend}" ./manage.py makemigrations --check
+}
+
+
+function docker_stop() { docker-compose down; }
+
+
+function get_app() {
+    local -l app
+
+    case "$1" in
+        ph) app="bukas" ;;
+        id) app="danacita" ;;
+    esac
+
+    echo "${app}"
+}
+
+
+function get_backend() {
+    local -l backend
+
+    case "$1" in
+        ph) backend="backend";;
+        id) backend="backend_danacita" ;;
+    esac
+
+    echo "${backend}"
+}
+
+
+function list_valid_repos() {
+    echo
+    for valid_repo in "${valid_repos[@]}"; do
+        echo -e "  --> ${CYAN}${valid_repo}${END_COLOR}"
+    done
+}
+
+
+function list_config() {
+read -rd "" details <<-EOF
+\t
+        ${RED}Company${END_COLOR}: Erudifi
+        ---------------------
+    -->    ${CYAN}Repo${END_COLOR}: ${repo}
+EOF
+
+    echo -e "${details}"
+}
+
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x

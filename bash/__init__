@@ -20,6 +20,8 @@ function execute() {
     "${script}" "$@"
 }
 
+# Professional Work related scripts
+function work { execute "work/${_WORK}/work" "$@"; }
 
 # Better pwd and ls
 function list { execute "list" "$@"; }

@@ -13,6 +13,10 @@
 [[ -z "${_EDITOR}" ]] && \
     _EDITOR="subl"
 
+[[ -z "${_WORK}" ]] && \
+    _WORK="bukas.ph"
+
 export _DEBUG
 export _PYTHON
 export _EDITOR
+export _WORK

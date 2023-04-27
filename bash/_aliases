@@ -37,7 +37,13 @@ function pyc() {
 }
 
 
-alias pym="${_PYTHON} -m"
+# Python module
+function pym() {
+    "${_PYTHON}" -m "$@"
+}
+
+
+# Python package installer
 alias pip="pym pip"
 
 # Python Virtual Environment
@@ -67,4 +73,3 @@ function blk() {
         black "${1}" "${@:2}"
     fi
 }
-

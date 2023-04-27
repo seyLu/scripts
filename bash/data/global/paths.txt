@@ -1,4 +1,5 @@
 dir=.
+work=Documents/Work
 www=/var/www
 host=/etc/hosts
 conf=/etc/apache2/sites-available

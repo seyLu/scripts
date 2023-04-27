@@ -1,5 +1,10 @@
 #! /bin/bash
 
+[[ -z "${_DATA_PATH}" ]] && {
+    # Work Data Path
+    readonly _DATA_WORK_PATH="${_SCRIPTS_PATH}/data/work"
+}
+
 [[ -z "${_DATA_GLOBAL_PATH}" ]] && {
     # Global Data Path
     readonly _DATA_GLOBAL_PATH="${_SCRIPTS_PATH}/data/global"
