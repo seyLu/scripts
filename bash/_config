@@ -14,7 +14,7 @@
     _EDITOR="subl"
 
 [[ -z "${_WORK}" ]] && \
-    _WORK="bukas.ph"
+    _WORK="erudifi"
 
 export _DEBUG
 export _PYTHON
