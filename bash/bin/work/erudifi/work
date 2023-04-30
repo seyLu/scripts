@@ -8,6 +8,7 @@ source "${_SCRIPTS_PATH}/_helpers"
 #------------------------------------------------------------------------#
 # Collection of Bukas.ph scripts
 #------------------------------------------------------------------------#
+
 readonly RED="\033[0;31m"
 readonly CYAN="\033[0;36m"
 readonly END_COLOR="\033[0m"
@@ -31,14 +32,13 @@ declare -l repo=$(
 function main() {
     [[ $# -eq 0 ]] && list_config && return;
 
-    choices "${work_path}" "${repo}" "$@"
+    choices "$@"
 }
 
 
 function choices() {
-    shift 2
     local options=$(
-        getopt -o r:x:b:t:X --long repo:,start:,bash:,test:,stop -- "$@"
+        getopt -o c:x:b:t:X --long change_dir:,start:,bash:,test:,stop -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -50,7 +50,7 @@ function choices() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -r | --repo) change_dir "${2,,}"; break ;;
+            -c | --change_dir) change_dir "${2,,}"; break ;;
             -x | --start) docker_start "${2,,}"; break ;;
             -b | --bash) docker_bash "${2,,}"; break ;;
             -t | --test) docker_test "${2,,}"; break ;;
@@ -127,7 +127,7 @@ function get_backend() {
     local -l backend
 
     case "$1" in
-        ph) backend="backend";;
+        ph) backend="backend" ;;
         id) backend="backend_danacita" ;;
     esac
 
