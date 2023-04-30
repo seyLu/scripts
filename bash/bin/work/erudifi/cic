@@ -49,9 +49,6 @@ function docker_dump() { docker-compose exec web flask makedump; }
 function docker_stop() { docker-compose down; }
 function usage() { echo; echo "CIC specific alias"; }
 
-alias cic="cd Documents/Work/cic-loantape"
-alias cic_up="docker-compose up"
-alias cic_dump="docker-compose exec web flask makedump"
 
 main "$@"
 
