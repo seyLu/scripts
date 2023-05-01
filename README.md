@@ -6,7 +6,7 @@
 
     ```bash
     # Initialize External Scripts
-    [[ -z "${_SCRIPTS_PATH}" ]] && source "${HOME}<path_to_scripts>/scripts/bash/__init__"
+    [[ -z "${_SCRIPTS_PATH}" ]] && source "${HOME}/<path_to_scripts>/scripts/bash/__init__"
     ```
 2. On Bash Shell, run
     
