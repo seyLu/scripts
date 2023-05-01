@@ -7,7 +7,6 @@
 
 source "${_SCRIPTS_PATH}/_config"
 source "${_SCRIPTS_PATH}/_aliases"
-source "${_SCRIPTS_PATH}/_helpers"
 
 #------------------------------------------------------------------------#
 # Initialize Scripts

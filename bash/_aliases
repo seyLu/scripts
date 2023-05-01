@@ -1,4 +1,7 @@
 #! /bin/bash
 
-source "${_SCRIPTS_PATH}/aliases/_"
-source "${_SCRIPTS_PATH}/aliases/python"
+readonly aliases_path="${_SCRIPTS_PATH}/aliases"
+
+source "${aliases_path}/_"
+source "${aliases_path}/_helpers"
+source "${aliases_path}/python"
