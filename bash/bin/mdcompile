@@ -2,6 +2,15 @@
 
 [[ "$_DEBUG" == "true" ]] && set -x
 
+#------------------------------------------------------------------------#
+# Compile multiple Markdown files into one Markdown file
+# Input:
+#   markdowns  - sections/*.md
+#   controller - main.md
+# Output:
+#   compiled.md
+#------------------------------------------------------------------------#
+
 function main() {
     local input="main.md"
     local output="compiled.md"

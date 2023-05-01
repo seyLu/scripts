@@ -5,6 +5,14 @@ source "${_SCRIPTS_PATH}/__init__"
 
 [[ "$_DEBUG" == "true" ]] && set -x
 
+#------------------------------------------------------------------------#
+# Moves compiled markdown into root directory and rename to README.md
+# Input:
+#   compiled.md
+# Output:
+#   ../README.md
+#------------------------------------------------------------------------#
+
 # Generate Readme
 function main() {
     if [[ $# -eq 1 && "$1" == "init" ]]; then

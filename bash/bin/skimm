@@ -4,6 +4,14 @@ shopt -s expand_aliases
 
 [[ "$_DEBUG" == "true" ]] && set -x
 
+#------------------------------------------------------------------------#
+# Reads file and stringifies into array or associative array
+# Input:
+#   file.txt
+# Output:
+#   stringified content of file.txt
+#------------------------------------------------------------------------#
+
 function main() {
     [[ $# -eq 0 ]] && usage && return;
 

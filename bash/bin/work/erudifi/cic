@@ -12,6 +12,7 @@ source "${_SCRIPTS_PATH}/_helpers"
 readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )"
 readonly cic_path="${work_path}/cic-loantape"
 
+
 function main() {
     [[ $# -eq 0 ]] && { change_dir; return; }
 

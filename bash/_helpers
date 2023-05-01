@@ -11,6 +11,7 @@ function format_spaces() {
     awk '{printf "%s%s",$0,spaces} END{print ""}' spaces="${spaces}"
 }
 
+
 # Extract value using key from stringified associative array
 function extract_value_assoc() {
     [[ $# -eq 2 ]] && key="$2"
@@ -38,10 +39,10 @@ function debug() {
     fi
 }
 
+
 # Initializes every other script aside from _init_
 function build() {
     # Sets Executable Permission to External Scripts
     find  "${_SCRIPTS_PATH}/bin" -maxdepth 3 -name "*"  \
         -not -perm -u=x -exec chmod u+x {} \;
 }
-

@@ -1,0 +1,54 @@
+#! /bin/bash
+
+# Latest Python
+function py() {
+    if [[ -f "${1}.py" ]]; then
+        "${_PYTHON}" "${1}.py" "${@:2}"
+    else
+        "${_PYTHON}" "${@}"
+    fi
+}
+
+
+# Change Python version
+function pyc() {
+    _PYTHON="python${1}"
+}
+
+
+# Python module
+function pym() {
+    "${_PYTHON}" -m "$@"
+}
+
+
+# Python package installer
+alias pip="pym pip"
+
+# Python Virtual Environment
+alias ve="
+    [[ ! -d .venv ]] && pym venv .venv --upgrade-deps
+    source .venv/bin/activate
+"
+
+
+# Python Pytest
+function pyt() {
+    if [[ -f "test_${1}.py"  ]]; then
+        pytest "test_${1}.py" "${@:2}"
+    else
+        pytest "${1}" "${@:2}"
+    fi
+}
+
+
+# Python Black Formatter with Isort
+function blk() {
+    if [[ -f "${1}.py"  ]]; then
+        isort "${1}.py"
+        black "${1}.py" "${@:2}"
+    else
+        isort "${1}"
+        black "${1}" "${@:2}"
+    fi
+}
