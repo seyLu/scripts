@@ -1,7 +1,6 @@
 #! /bin/bash
 
-source "${_SCRIPTS_PATH}/_paths"
-source "${_SCRIPTS_PATH}/_helpers"
+source "${_SCRIPTS_PATH}/__init__"
 
 [[ "$_DEBUG" == "true" ]] && set -x
 
