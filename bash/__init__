@@ -14,7 +14,7 @@ source "${_SCRIPTS_PATH}/_aliases"
 
 # Execute External Script
 function execute() {
-    local script="${_SCRIPTS_PATH}/bin/$1"
+    readonly script="${_SCRIPTS_PATH}/bin/${1}"
     shift
     "${script}" "$@"
 }
