@@ -6,6 +6,7 @@
 }
 
 source "${_SCRIPTS_PATH}/_config"
+source "${_SCRIPTS_PATH}/_colors"
 source "${_SCRIPTS_PATH}/_aliases"
 
 #------------------------------------------------------------------------#

@@ -8,10 +8,6 @@ source "${_SCRIPTS_PATH}/__init__"
 # Collection of Bukas.ph scripts
 #------------------------------------------------------------------------#
 
-readonly RED="\033[0;31m"
-readonly CYAN="\033[0;36m"
-readonly END_COLOR="\033[0m"
-
 readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )/Erudifi"
 readonly -a valid_repos=(
     "mono-backend"

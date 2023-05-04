@@ -1,0 +1,44 @@
+#! /bin/bash
+
+#------------------------------------------------------------------------#
+# Collection of color codes
+#------------------------------------------------------------------------#
+
+# Foreground
+declare -rx BLACK="\e[30m"
+declare -rx RED="\e[31m"
+declare -rx GREEN="\e[32m"
+declare -rx YELLOW="\e[33m"
+declare -rx BLUE="\e[34m"
+declare -rx MAGENTA="\e[35m"
+declare -rx CYAN="\e[36m"
+declare -rx LIGHT_GRAY="\e[37m"
+declare -rx GRAY="\e[90m"
+declare -rx LIGHT_RED="\e[91m"
+declare -rx LIGHT_GREEN="\e[92m"
+declare -rx LIGHT_YELLOW="\e[93m"
+declare -rx LIGHT_BLUE="\e[94m"
+declare -rx LIGHT_MAGENTA="\e[95m"
+declare -rx LIGHT_CYAN="\e[96m"
+declare -rx WHITE="\e[97m"
+
+# Background
+declare -rx BG_BLACK="\e[40m"
+declare -rx BG_RED="\e[41m"
+declare -rx BG_GREEN="\e[42m"
+declare -rx BG_YELLOW="\e[43m"
+declare -rx BG_BLUE="\e[44m"
+declare -rx BG_MAGENTA="\e[45m"
+declare -rx BG_CYAN="\e[46m"
+declare -rx BG_LIGHT_GRAY="\e[47m"
+declare -rx BG_GRAY="\e[100m"
+declare -rx BG_LIGHT_RED="\e[101m"
+declare -rx BG_LIGHT_GREEN="\e[102m"
+declare -rx BG_LIGHT_YELLOW="\e[103m"
+declare -rx BG_LIGHT_BLUE="\e[104m"
+declare -rx BG_LIGHT_MAGENTA="\e[105m"
+declare -rx BG_LIGHT_CYAN="\e[106m"
+declare -rx BG_WHITE="\e[107m"
+
+declare -rx END_COLOR="\e[0m"
+
