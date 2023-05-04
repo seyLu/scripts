@@ -46,16 +46,29 @@ function main() {
 function list() {
     case "${key}" in
         scripts) list_scripts "${path}" ;;
+        host) list_hosts "${path}" ;;
         *) ls "${path}" ;;
     esac
 }
 
 
+# List executable binaries
 function list_scripts() {
     ls "$1" -p -I "_*" \
         | grep -v "/" \
         | format_spaces \
         | sed 's/ *$//g'
+}
+
+
+# List local domains for localhost
+function list_hosts() {
+    readarray -t lines < "$1"
+    for line in "${lines[@]}"; do
+        if [[ "${line}" == "127.0.0.1   "* ]]; then
+            echo "${line#127.0.0.1   }"
+        fi
+    done
 }
 
 
