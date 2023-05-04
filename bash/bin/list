@@ -21,7 +21,7 @@ function main() {
         readonly path=$(
             case "${key}" in
                 dir | .) pwd ;;
-                scripts) echo "${_SCRIPTS_PATH}" ;;
+                scripts) echo "${_SCRIPTS_PATH}/bin" ;;
                 *) extract_value_assoc "${_PATHS}" ;;
             esac
         )
@@ -49,6 +49,7 @@ function list() {
         *) ls "${path}" ;;
     esac
 }
+
 
 function list_scripts() {
     ls "$1" -p -I "_*" \
