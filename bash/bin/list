@@ -63,10 +63,12 @@ function list_scripts() {
 
 # List local domains for localhost
 function list_hosts() {
+    readonly BOLD_YELLOW="\e[1;${YELLOW#\\e[}"
+
     readarray -t lines < "$1"
     for line in "${lines[@]}"; do
         if [[ "${line}" == "127.0.0.1   "* ]]; then
-            echo "${line#127.0.0.1   }"
+            echo -e "${BOLD_YELLOW}${line#127.0.0.1   }${END_COLOR}"
         fi
     done
 }
