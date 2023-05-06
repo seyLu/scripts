@@ -62,6 +62,11 @@ function stringify_assoc() {
         key="${line%%=*}"
         value="${line##*=}"
 
+        case "${value::1}" in
+            / | .) ;;
+            *) value="${HOME}/${value}" ;;
+        esac
+
         if [[ -z "${string}" ]]; then
             substr="[${key}]=\"${value}\""
         else

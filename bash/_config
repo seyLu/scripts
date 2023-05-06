@@ -13,10 +13,14 @@
 [[ -z "${_EDITOR}" ]] && \
     _EDITOR="subl"
 
+[[ -z "${_RESUME_FILE}" ]] && \
+    _RESUME_FILE="mj_sabit_resume.pdf"
+
 [[ -z "${_WORK}" ]] && \
     _WORK="erudifi"
 
 export _DEBUG
 export _PYTHON
 export _EDITOR
+export _RESUME_FILE
 export _WORK

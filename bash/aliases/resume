@@ -1,0 +1,11 @@
+#! /bin/bash
+
+function resume() {
+    local input_path="$( extract_value_assoc "${_PATHS}" "downloads" )/${_RESUME_FILE}"
+    local output_path="$( extract_value_assoc "${_PATHS}" "resume" )/${_RESUME_FILE}"
+
+
+    gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${output_path}" "${input_path}"
+
+    rm "${input_path}"
+}

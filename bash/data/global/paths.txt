@@ -1,5 +1,7 @@
 dir=.
+downloads=Downloads
 work=Documents/Work
+resume=Documents/0_IMPORTANT
 www=/var/www
 host=/etc/hosts
 conf=/etc/apache2/sites-available
