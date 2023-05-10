@@ -42,7 +42,7 @@ function main() {
 
             # Exit the loop if we reach the current date
             if [[ "${DATE}" == $(date +%Y%m%d) ]]; then
-              exit 0
+                exit 0
             fi
         done
     done
