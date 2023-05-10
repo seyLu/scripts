@@ -45,7 +45,7 @@ function change_dir() {
 
 
 function docker_start() { docker-compose up; }
-function docker_dump() { docker-compose exec web flask makedump; }
+function docker_dump() { docker-compose exec web flask makedump "$@"; }
 function docker_stop() { docker-compose down; }
 function usage() { echo; echo "CIC specific alias"; }
 
