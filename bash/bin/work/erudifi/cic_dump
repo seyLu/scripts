@@ -1,0 +1,54 @@
+#!/bin/bash
+
+source "${_SCRIPTS_PATH}/__init__"
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#------------------------------------------------------------------------#
+# CIC dump snapshot from 6 months ago up to current day
+#------------------------------------------------------------------------#
+
+# Get the current year and month
+readonly YEAR=$(date +%Y)
+readonly MONTH=$(date +%m)
+readonly DAY=$(date +%d)
+
+function main() {
+    # Loop over the past 6 months
+    for (( i=6; i >= 0; i-- )); do
+        # Calculate the year and month for this iteration
+        Y=$(date -d "${YEAR}-${MONTH}-${DAY} -${i} month" +%Y)
+        M=$(date -d "${YEAR}-${MONTH}-${DAY} -${i} month" +%m)
+
+        # Get the number of days for this month
+        DAYS=$(cal $M $Y | awk 'NF {DAYS = $NF}; END {print DAYS}')
+
+        if [[ "${i}" == 6 ]]; then
+            START_DATE="${DAY}"
+        else
+            START_DATE=1
+        fi
+
+        # Loop over the days for this month
+        for (( j="${START_DATE}"; j <= "${DAYS}"; j++ )); do
+            # Construct the date for this day
+            DATE=$(date -d "${Y}-${M}-${j}" +%Y%m%d)
+
+            # Check if the date is valid
+            if [[ $(date -d "${DATE}" +%Y%m%d) -le $(date +%Y%m%d) ]]; then
+                # Do something with the date
+                cic -s "${DATE}"
+            fi
+
+            # Exit the loop if we reach the current date
+            if [[ "${DATE}" == $(date +%Y%m%d) ]]; then
+              exit 0
+            fi
+        done
+    done
+}
+
+
+main $"@"
+
+[[ "$_DEBUG" == "true" ]] && set -x

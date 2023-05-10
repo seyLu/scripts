@@ -23,6 +23,7 @@ function execute() {
 # Professional Work related scripts
 function work { execute "work/${_WORK}/work" "$@"; }
 function cic { execute "work/${_WORK}/cic" "$@"; }
+function cic_dump { execute "work/${_WORK}/cic_dump" "$@"; }
 
 # Better pwd and ls
 function list { execute "list" "$@"; }

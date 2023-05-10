@@ -16,7 +16,7 @@ function main() {
     [[ $# -eq 0 ]] && { change_dir; return; }
 
     local options=$(
-        getopt -o xdX --long start,dump,stop -- "$@"
+        getopt -o xdXs: --long start,dump,stop,snapshot: -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -29,7 +29,8 @@ function main() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -x | --start) docker_start; break ;;
-            -d | --dump) docker_dump "$@"; break ;;
+            -d | --dump) docker_dump; break ;;
+            -s | --snapshot) docker_dump "$2"; break ;;
             -X | --stop) docker_stop; break ;;
             --) shift; break ;;
             *) usage; break ;;
@@ -45,9 +46,17 @@ function change_dir() {
 
 
 function docker_start() { docker-compose up; }
-function docker_dump() { docker-compose exec web flask makedump "$@"; }
 function docker_stop() { docker-compose down; }
 function usage() { echo; echo "CIC specific alias"; }
+
+
+function docker_dump() {
+    if [[ $# -eq 0 ]]; then
+        docker-compose exec web flask makedump
+    else
+        docker-compose exec web flask makedump --snapshot "$1"
+    fi
+}
 
 
 main "$@"
