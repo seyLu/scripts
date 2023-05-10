@@ -13,6 +13,7 @@ readonly YEAR=$(date +%Y)
 readonly MONTH=$(date +%m)
 readonly DAY=$(date +%d)
 
+
 function main() {
     # Loop over the past 6 months
     for (( i=6; i >= 0; i-- )); do
