@@ -6,6 +6,9 @@ alias reload=". ~/.bashrc"
 # Open scripts directory on editor
 alias shell="${_EDITOR} ${_SCRIPTS_PATH}/../"
 
+# Update apt packages
+alias update="sudo apt update && sudo apt upgrade -y"
+
 # Colored ls and grep by default
 alias ls="ls --color=yes"
 alias grep="grep --color=always"
