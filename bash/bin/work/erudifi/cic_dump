@@ -15,41 +15,54 @@ readonly DAY=$(date +%d)
 
 
 function main() {
+    [[ $# -eq 0 ]] && { dump_six_months; return; }
+
+    dump_data_nth_month_ago "$1"
+}
+
+
+function dump_six_months() {
     # Loop over the past 6 months
     for (( i=6; i >= 0; i-- )); do
-        # Calculate the year and month for this iteration
-        Y=$(date -d "${YEAR}-${MONTH}-${DAY} -${i} month" +%Y)
-        M=$(date -d "${YEAR}-${MONTH}-${DAY} -${i} month" +%m)
-
-        # Get the number of days for this month
-        DAYS=$(cal $M $Y | awk 'NF {DAYS = $NF}; END {print DAYS}')
-
-        if [[ "${i}" == 6 ]]; then
-            START_DATE="${DAY}"
-        else
-            START_DATE=1
-        fi
-
-        # Loop over the days for this month
-        for (( j="${START_DATE}"; j <= "${DAYS}"; j++ )); do
-            # Construct the date for this day
-            DATE=$(date -d "${Y}-${M}-${j}" +%Y%m%d)
-
-            # Check if the date is valid
-            if [[ $(date -d "${DATE}" +%Y%m%d) -le $(date +%Y%m%d) ]]; then
-                # Do something with the date
-                cic -s "${DATE}"
-            fi
-
-            # Exit the loop if we reach the current date
-            if [[ "${DATE}" == $(date +%Y%m%d) ]]; then
-                exit 0
-            fi
-        done
+        dump_data_nth_month_ago "${i}"
     done
 }
 
 
-main $"@"
+function dump_data_nth_month_ago() {
+    i="$1"
+
+    Y=$(date -d "${YEAR}-${MONTH}-${DAY} -${i} month" +%Y)
+    M=$(date -d "${YEAR}-${MONTH}-${DAY} -${i} month" +%m)
+
+    # Get the number of days for this month
+    DAYS=$(cal $M $Y | awk 'NF {DAYS = $NF}; END {print DAYS}')
+
+    if [[ "${i}" == 6 ]]; then
+        START_DATE="${DAY}"
+    else
+        START_DATE=1
+    fi
+
+    # Loop over the days for this month
+    for (( j="${START_DATE}"; j <= "${DAYS}"; j++ )); do
+        # Construct the date for this day
+        DATE=$(date -d "${Y}-${M}-${j}" +%Y%m%d)
+
+        # Check if the date is valid
+        if [[ $(date -d "${DATE}" +%Y%m%d) -le $(date +%Y%m%d) ]]; then
+            # Do something with the date
+            cic -s "${DATE}"
+        fi
+
+        # Exit the loop if we reach the current date
+        if [[ "${DATE}" == $(date +%Y%m%d) ]]; then
+            exit 0
+        fi
+    done
+}
+
+
+main "$@"
 
 [[ "$_DEBUG" == "true" ]] && set -x
