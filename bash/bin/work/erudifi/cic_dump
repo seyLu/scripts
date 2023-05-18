@@ -38,14 +38,8 @@ function dump_data_nth_month_ago() {
     # Get the number of days for this month
     DAYS=$(cal $M $Y | awk 'NF {DAYS = $NF}; END {print DAYS}')
 
-    if [[ "${i}" == 6 ]]; then
-        START_DATE="${DAY}"
-    else
-        START_DATE=1
-    fi
-
     # Loop over the days for this month
-    for (( j="${START_DATE}"; j <= "${DAYS}"; j++ )); do
+    for (( j=1; j <= "${DAYS}"; j++ )); do
         # Construct the date for this day
         DATE=$(date -d "${Y}-${M}-${j}" +%Y%m%d)
 
