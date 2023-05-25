@@ -33,7 +33,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o c:x:b:t:X --long change_dir:,start:,bash:,test:,stop -- "$@"
+        getopt -o c:x:b:t:X:I --long change_dir:,start:,bash:,test:,stop,install -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -50,6 +50,7 @@ function choices() {
             -b | --bash) docker_bash "${2,,}"; break ;;
             -t | --test) docker_test "${2,,}"; break ;;
             -X | --stop) docker_stop; break ;;
+            -I | --install) docker_install; break ;;
             --) shift; break ;;
             *) list_config; break ;;
         esac
@@ -104,6 +105,15 @@ function docker_test() {
 
 
 function docker_stop() { docker-compose down; }
+
+function docker_install() {
+    if [[ "${repo}" == "borrower-app" ]]; then
+        docker-compose run expo npm install
+    else
+        echo
+        echo "Nothing to install."
+    fi
+}
 
 
 function get_app() {
