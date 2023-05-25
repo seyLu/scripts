@@ -33,7 +33,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o c:x:b:t:X:I --long change_dir:,start:,bash:,test:,stop,install -- "$@"
+        getopt -o c:x:b:t:X,I --long change_dir:,start:,bash:,test:,stop,install -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
