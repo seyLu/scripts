@@ -1,3 +1,4 @@
 #! /bin/bash
 
+# Run when docker becomes a bitch
 alias prune="docker system prune -f"
