@@ -52,7 +52,9 @@ function usage() { echo; echo "CIC specific alias"; }
 
 function docker_dump() {
     if [[ $# -eq 0 ]]; then
-        docker-compose exec web flask makedump
+        cic -s 20230131
+        cic -s 20230228
+        cic -s 20230331
     else
         docker-compose exec web flask makedump --snapshot "$1"
     fi
