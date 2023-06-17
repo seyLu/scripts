@@ -1,0 +1,396 @@
+#! /bin/bash
+
+#------------------------------------------------------------------------#
+# Collection of Archived Scripts
+# > this is where I started on my bash journey
+# > around Jan 2023
+#------------------------------------------------------------------------#
+
+# Silent execution, no output message
+silent() {
+    "$@" > /dev/null
+}
+
+# Repeat string n times
+repeat() {
+    min=1
+    max=$1
+    string=$2
+
+    for i in $(seq $min $max); do
+        echo -n $string
+    done; echo
+}
+
+# Success Message
+msg() {
+    message=$1
+
+    echo
+    repeat $((${#message} + 4)) -
+    echo "+ $message +"
+    repeat $((${#message} + 4)) -
+    echo
+}
+
+# Print Working Directory with its contents
+pwdls() {
+    pwd
+    ls
+}
+
+#  List all Visible Files and Directories
+
+list() {
+    echo
+
+    case $1 in
+    dir)
+        pwdls ;;
+    www)
+        cd /var/www
+        pwdls
+        cd ;;
+    conf)
+        cd /etc/apache2/sites-enabled
+        pwdls
+        cd ;;
+    host)
+        echo /etc/hosts
+        cat /etc/hosts | grep ".test" | sed "s/^.*[[:blank:]]//g" | grep [[:graph:]]
+        ;;
+    *)
+        pwd
+        ls $1
+    esac
+
+    echo
+}
+
+# Append string to end of file
+append() {
+    if [ $1 == nosudo ]; then
+        echo -e $3 | silent tee -a $2
+    else
+        echo -e $2 | silent sudo tee -a $1
+    fi
+}
+
+# Edit file using editor
+modify() {
+    editor="subl"
+    path=.
+
+    case $1 in
+    bash)
+        path=~/.bashrc ;;
+    alias)
+        path=~/.bash_aliases ;;
+    conf)
+        path=/etc/apache2/sites-available/$2.conf ;;
+    host)
+        path=/etc/hosts ;;
+    *)
+        path=$1
+    esac
+
+    $editor $path
+}
+
+# Change Versions
+cv() {
+    lang=$1
+    version=$2
+
+    case $lang in
+    php)
+        silent sudo a2dismod $lang*
+        silent sudo a2enmod $lang$version
+        silent sudo service apache2 restart
+
+        msg "Apache PHP version successfully switched to PHP $version" ;;
+    esac
+}
+
+# Create new dir on var/www and modify ownership
+www() {
+    cd /var/www
+
+    case $1 in
+    undo)
+        www remove $www_cache_dir ;;
+    list)
+        list dir ;;
+    remove)
+        sudo rmdir $2
+        list dir ;;
+    *)
+        sudo mkdir $1
+        sudo chown $USER:www-data $1
+        sudo chmod g+s $1
+        sudo chmod o-rwx $1
+        list dir
+        cd $1
+
+        msg "Successfully created dir $1 in /var/www with appropriate permissions"
+        www_cache_dir=$1
+    esac
+
+    cd
+}
+
+# Create new Apache conf file
+conf() {
+    cd /etc/apache2/sites-available
+
+    case $1 in
+    undo)
+        if [ $# -eq 2 ]; then
+            case $2 in
+            host)
+                conf rmhost $conf_cache_file ;;
+            all)
+                conf rmhost $conf_cache_file ;&
+            enable)
+                conf disable $conf_cache_file
+            esac
+        fi
+
+        conf remove $conf_cache_file ;;
+    list)
+        if [ $# -eq 2 ]; then
+            case $2 in
+            all)
+                list dir
+                list conf
+                list host ;;
+            *)
+                list $2
+            esac
+        else
+            list dir
+        fi ;;
+    remove)
+        sudo rm -f $2.conf
+        list dir ;;
+    enable)
+        silent sudo a2ensite $2.conf
+        silent sudo service apache2 reload
+        list conf
+
+        msg "Apache conf $2 successfully enabled"
+        conf_cache_file=$2 ;;
+    disable)
+        silent sudo a2dissite $2.conf
+        silent sudo service apache2 reload
+        list conf ;;
+    host)
+        if [ $# -lt 2 ]; then
+            cd | return
+        else
+            previous_mod_time=`stat -c %Y /etc/hosts`
+            append /etc/hosts "127.0.0.1\t$2.test"
+
+            while true; do
+                current_mod_time=`stat -c %Y /etc/hosts`
+                if [ "$previous_mod_time" != "$current_mod_time" ]; then
+                    break
+                fi
+                sleep 1
+            done
+
+            list host | sed "s/^.*\t//g" | grep [[:graph:]]
+
+            msg "Local domain successfully registered in localhost"
+            conf_cache_file=$2
+        fi ;;
+    rmhost)
+        if [ $# -lt 2 ]; then
+            cd | return
+        else
+            previous_mod_time=`stat -c %Y /etc/hosts`
+            sudo sed -i.bak "/$2.test/d" /etc/hosts
+
+            while true; do
+                current_mod_time=`stat -c %Y /etc/hosts`
+                if [ "$previous_mod_time" != "$current_mod_time" ]; then
+                    break
+                fi
+                sleep 1
+            done
+
+            list host
+        fi ;;
+    *)
+        file=$1.conf
+
+        if [ $# -eq 2 ]; then
+            path=$2
+        else
+            path=$1
+        fi
+
+        sudo touch $file
+        append $file "<VirtualHost *:80>"
+        append $file "\tServerName $1.test"
+        append $file "\tServerAlias *.$1.test"
+        append $file ""
+        append $file "\tDocumentRoot /var/www/$path/public"
+        append $file "\tDirectoryIndex index.php"
+        append $file ""
+        append $file "\t<Directory \"/var/www/$path/public\">"
+        append $file "\t\tAllowOverride All"
+        append $file "\t\tRequire all granted"
+        append $file ""
+        append $file "\t\tFallbackResource /index.php"
+        append $file "\t</Directory>"
+        append $file "</VirtualHost>"
+        list dir
+
+        msg "Successfully created conf $1 in /etc/apach2/sites-available"
+        conf_cache_file=$1
+    esac
+
+    cd
+}
+
+# Create Apache Virtual Host
+a2vhost() {
+    case $1 in
+    undo)
+        conf undo all
+        www undo ;;
+    remove)
+        conf rmhost $2
+        conf disable $2
+        conf remove $2
+        www remove $2 ;;
+    list)
+        www list
+        conf list all ;;
+    *)
+        www $1
+        conf $1
+        conf enable $1
+        conf host $1
+    esac
+}
+
+pvm() {
+    case $1 in
+    list)
+        pvm_bullet=" ->  "
+
+        if [ $# -eq 2 ]; then
+            echo
+            case $2 in
+            current)
+                apache_using_php=$( ls /etc/apache2/mods-enabled | grep "php" | sed "s/php/$pvm_bullet/g" | sed "s/[[:alpha:]]//g" | uniq | sed "s/\.$//g" )
+                echo " # Current Apache PHP version"
+                echo -e "$apache_using_php" | cyan-grep [[:graph:]] ;;
+            installed)
+                installed_php_list=$( sudo update-alternatives --list php | sed "s/\/usr\/bin\/php/$pvm_bullet/g" | grep "[[:digit:]].[[:digit:]]" | sort -ru )
+                echo " # Installed PHP versions"
+                echo -e "$installed_php_list" | green-grep [[:graph:]] ;;
+            available)
+                available_php_list=$( apt-cache showpkg php | cut -d \  -f 1 | sort -ru | grep "php" | sed "s/^php/$pvm_bullet/g")
+                echo " # Available PHP versions"
+                echo -e "$available_php_list" | grep [[:graph:]] ;;
+            esac
+            echo
+        else
+            pvm list current
+            pvm list installed
+            pvm list available
+        fi ;;
+    use)
+        cv php $2 ;;
+    esac
+}
+
+app() {
+    case $1 in
+    add)
+        case $2 in
+        scripts)
+            if [ -f package.json ]; then
+                if [ $( cat package.json | grep -c SCRIPTS ) == 0 ]; then
+                    scripts=(
+                        '"\\\\ SCRIPTS \\\\": "-------------------------------------------"'
+                        '"+---------------+": "+-------------------------------------+"'
+                        '"\\\\ GIT: HELPERS \\\\": ""'
+                        '"undo:add": "git restore --staged ."'
+                        '"undo:commit": "git reset HEAD~1 --soft"'
+                        '"please": "git push --force-with-lease --force-if-includes"'
+                        '"log": "git log --pretty=format:\\"\%h - \%an, \%ar : \%s\\""'
+                        '"\\\\ GIT: AUTOMATE ADD, COMMIT, PUSH \\\\": ""'
+                        '"pregit": "git add ."'
+                        '"git": "git commit"'
+                        '"postgit": "git push"'
+                        '"*------------------*": "*---------------------------------*"'
+                        '"\\\\ ENDSCRIPTS \\\\": "---------------------------------------"'
+                    )
+
+                    len=${#scripts[@]}
+
+                    for ((i = $len - 1; i >= 0; i--)); do
+                        script=${scripts[i]}
+
+                        key="$(echo $script | sed -e 's/^"\(.*\)":.*/\1/')"
+                        value="$(echo $script | sed -e 's/^.*": "\(.*\)"/\1/')"
+
+                        sed -i "/\"scripts\": {/a \    \"$key\": \"$value\"," package.json
+                    done
+
+                    msg "Successfully added scripts to package.json"
+                else
+                    msg "Scripts already added to package.json"
+                fi
+            else
+                silent npm init -y
+                app add scripts
+            fi
+
+            ;;
+        edconf)
+            if [ -f .editorconfig ]; then
+                if [ ! -s .editorconfig ]; then
+                    file=.editorconfig
+
+                    append nosudo $file "root = true"
+                    append nosudo $file ""
+                    append nosudo $file "[*]"
+                    append nosudo $file "end_of_line = lf"
+                    append nosudo $file "insert_final_newline = true"
+                    append nosudo $file "charset = utf-8"
+                    append nosudo $file "indent_style = space"
+                    append nosudo $file "indent_size = 2"
+
+                    msg "Successfully added configurations to .editorconfig"
+                else
+                    msg "Configurations already added to .editorconfig"
+                fi
+            else
+                touch .editorconfig
+                app add edconf
+            fi
+
+            ;;
+        esac
+
+        ;;
+    remove)
+        case $2 in
+        edconf)
+            rm .editorconfig
+
+            ;;
+        scripts)
+            rm package.json
+
+            ;;
+        esac
+
+        ;;
+    esac
+}
