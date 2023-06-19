@@ -9,7 +9,7 @@ source "${_SCRIPTS_PATH}/__init__"
 #------------------------------------------------------------------------#
 
 readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )"
-readonly cic_path="${work_path}/cic-loantape"
+readonly cic_path="${work_path}/Erudifi/CIC/cic-loantape"
 
 
 function main() {
@@ -40,6 +40,7 @@ function main() {
 
 
 function change_dir() {
+    echo "${cic_path}"
     gnome-terminal --working-directory="${cic_path}" --no-environment --tab
     gnome-terminal --working-directory="${cic_path}" --no-environment --tab
 }
