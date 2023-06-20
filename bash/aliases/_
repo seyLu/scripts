@@ -9,6 +9,9 @@ alias shell="${_EDITOR} ${_SCRIPTS_PATH}/../"
 # Update apt packages
 alias update="sudo apt update && sudo apt upgrade -y"
 
+# Refresh update snap store
+alias snupdate="snap-store --quit && sudo snap refresh snap-store"
+
 # Colored ls and grep by default
 alias ls="ls --color=yes"
 alias grep="grep --color=always"
