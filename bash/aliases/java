@@ -1,0 +1,9 @@
+#! /bin/bash
+
+function jv() {
+    if [[ -f "${1}.java" ]]; then
+        java "${1}.java" "${@:2}"
+    else
+        java "${@}"
+    fi
+}
