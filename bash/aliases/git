@@ -1,3 +1,11 @@
 #! /bin/bash
 
 alias branch="git branch --show-current"
+
+
+# simplify git for solo development
+function g() {
+    git add .
+    git commit -m "$@"
+    git push
+}
