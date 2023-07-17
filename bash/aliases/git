@@ -5,7 +5,19 @@ alias branch="git branch --show-current"
 
 # simplify git for solo development
 function g() {
-    git add .
-    git commit -m "$@"
-    git push
+    if [[ $# -eq 1 ]]; then
+        git add .
+        git commit -m "$@"
+        git push
+    else
+        echo
+        echo "Usage:"
+        echo "  Current directory must be a repo"
+        echo
+        echo "Args:"
+        echo "  Commit Message"
+        echo
+        echo "Example:"
+        echo "  g \"<commit_message>\""
+    fi
 }
