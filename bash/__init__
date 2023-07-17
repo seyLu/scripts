@@ -1,9 +1,6 @@
 #! /bin/bash
 
-[[ -z "${_SCRIPTS_PATH}" ]] && {
-    readonly _SCRIPTS_PATH="$( dirname -- "$BASH_SOURCE" )"
-    export _SCRIPTS_PATH
-}
+readonly _SCRIPTS_PATH="$( dirname -- "${BASH_SOURCE}" )"
 
 source "${_SCRIPTS_PATH}/_config"
 source "${_SCRIPTS_PATH}/_colors"
