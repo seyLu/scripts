@@ -8,7 +8,7 @@
     _DEBUG="false"
 
 [[ -z "${_PYTHON}" ]] && \
-    _PYTHON="python3.12"
+    _PYTHON="python3.11"
 
 [[ -z "${_EDITOR}" ]] && \
     _EDITOR="subl"
