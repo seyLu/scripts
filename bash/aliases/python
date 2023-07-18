@@ -31,6 +31,10 @@ alias ve="
     source .venv/bin/activate
 "
 
+# Python pip freeze and install
+alias freeze="pip freeze > requirements.txt"
+alias unfreeze="pip install -r requirements.txt"
+
 
 # Python Pytest
 function pyt() {
