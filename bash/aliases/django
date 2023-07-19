@@ -3,7 +3,7 @@
 # Django manage.py
 function dj () {
     if [[ $# -gt 0 ]]; then
-        local options=$( getopt -o Mm --long makemigrations:migrate: -- "$@")
+        local options=$( getopt -o p:a:MmxX: --long startproject:,startapp:makemigrations:migrate:runserver:,_runserver -- "$@")
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
@@ -14,8 +14,12 @@ function dj () {
 
         while [[ $# -gt 0 ]]; do
             case "$1" in
+                -p | --startproject) django-admin startproject "${2}"; break ;;
+                -a | --startapp) py manage startapp "${2}"; break ;;
                 -M | --makemigrations) py manage makemigrations; break ;;
                 -m | --migrate) py manage migrate; break;;
+                -x | --runserver) py manage runserver; break ;;
+                -X | --_runserver) py manage runserver "$@"; break ;;
                 --) shift; break ;;
                 *) echo; echo "Desc: Django aliases"; echo "Usage: TODO" ;;
             esac
