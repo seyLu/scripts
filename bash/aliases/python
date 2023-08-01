@@ -48,11 +48,15 @@ function pyt() {
 
 # Python Black Formatter with Isort
 function blk() {
+    local files=""
+    
     if [[ -f "${1}.py"  ]]; then
-        isort "${1}.py"
-        black "${1}.py" "${@:2}"
+        files="${1}.py"
     else
-        isort "${1}"
-        black "${1}" "${@:2}"
+        files="${1}"
     fi
+
+    ruff check "${files}" --fix
+    isort --profile=black "${files}"
+    black "${files}" "${@:2}"
 }
