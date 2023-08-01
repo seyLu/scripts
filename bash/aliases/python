@@ -46,10 +46,10 @@ function pyt() {
 }
 
 
-# Python Black Formatter with Isort
+# Python Ruff Linter + Black Formatter with Isort
 function blk() {
     local files=""
-    
+
     if [[ -f "${1}.py"  ]]; then
         files="${1}.py"
     else
