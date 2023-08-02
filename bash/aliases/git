@@ -21,3 +21,19 @@ function g() {
         echo "  g \"<commit_message>\""
     fi
 }
+
+# simplify git add
+function ga() {
+    if [[ $# -gt 0 ]]; then
+        git add "$@"
+    else
+        git add .
+    fi
+}
+
+# simplify git commit
+alias gc="git commit -m"
+
+# simplify git push, pull
+alias gp="git push"
+alias gpl="git pull"
