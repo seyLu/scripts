@@ -36,4 +36,5 @@ alias gc="git commit -m"
 
 # simplify git push, pull
 alias gp="git push"
+alias gpu="git push --set-upstream origin $(branch)"
 alias gpl="git pull"
