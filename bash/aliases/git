@@ -10,14 +10,12 @@ function g() {
         git commit -m "$@"
         reload
 
-        [[ "$_DEBUG" == "true" ]] && set -x
         local branch=$(branch)
         if [[ "${branch}" == "main" ]]; then
             git push
         else
             git push --set-upstream origin "${branch}"
         fi
-        [[ "$_DEBUG" == "true" ]] && set -x
     else
         echo
         echo "Usage:"
