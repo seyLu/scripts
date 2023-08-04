@@ -38,3 +38,6 @@ alias gc="git commit -m"
 alias gp="git push"
 alias gpu="git push --set-upstream origin $(branch)"
 alias gpl="git pull"
+
+# simplify git create and switch to new branch
+alias gb="git checkout -b"
