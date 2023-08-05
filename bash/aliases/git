@@ -1,6 +1,6 @@
 #! /bin/bash
 
-alias branch="git branch --show-current"
+alias branch="reload; git branch --show-current"
 
 
 # simplify git for solo development
@@ -8,13 +8,13 @@ function g() {
     if [[ $# -eq 1 ]]; then
         git add .
         git commit -m "$@"
-        reload
 
         local branch=$(branch)
         if [[ "${branch}" == "main" ]]; then
             git push
         else
             git push --set-upstream origin "${branch}"
+            git checkout main
         fi
     else
         echo
@@ -43,7 +43,7 @@ alias gc="git commit -m"
 
 # simplify git push, pull
 alias gp="git push"
-alias gpu="reload; git push --set-upstream origin $(branch)"
+alias gpu="git push --set-upstream origin $(branch)"
 alias gpl="git pull"
 
 # simplify git create and switch to new branch
