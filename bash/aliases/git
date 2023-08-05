@@ -1,7 +1,6 @@
 #! /bin/bash
 
 alias branch="reload; git branch --show-current"
-alias branches="reload; git branch"
 
 
 # simplify git for solo development
@@ -30,6 +29,7 @@ function g() {
     fi
 }
 
+
 # simplify git add
 function ga() {
     if [[ $# -gt 0 ]]; then
@@ -39,6 +39,7 @@ function ga() {
     fi
 }
 
+
 # simplify git commit
 alias gc="git commit -m"
 
@@ -47,5 +48,47 @@ alias gp="git push"
 alias gpu="git push --set-upstream origin $(branch)"
 alias gl="git pull"
 
-# simplify git create and switch to new branch
-alias gb="git checkout main; git checkout -b"
+
+# simplify working with git branch
+function gb() {
+    reload
+
+    if [[ $# -gt 0 ]]; then
+        local options=$( getopt -o lc:s:f: --long list,create:,switch:,find: -- "$@")
+
+        [[ $? -ne 0 ]] && {
+            echo "Incorrect options provided"
+            exit 1
+        }
+
+        eval set -- "${options}"
+
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+                -l | --list)
+                    git branch;
+                    break
+                    ;;
+                -c | --create)
+                    git reset --hard
+                    git checkout main
+                    git checkout -b "${2}"
+                    break
+                    ;;
+                -s | --switch)
+                    git reset --hard
+                    git checkout "${2}"
+                    break
+                    ;;
+                -f | --find)
+                    git branch | grep "${2}"
+                    break
+                    ;;
+                --) shift; break ;;
+                *) branch; break ;;
+            esac
+        done
+    else
+        branch
+    fi
+}
