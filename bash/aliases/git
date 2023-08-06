@@ -1,5 +1,4 @@
 #! /bin/bash
-
 alias branch="reload; git branch --show-current"
 
 
@@ -9,11 +8,10 @@ function g() {
         git add .
         git commit -m "$@"
 
-        local branch=$(branch)
-        if [[ "${branch}" == "main" ]]; then
+        if [[ "$(branch)" == "main" ]]; then
             git push
         else
-            git push --set-upstream origin "${branch}"
+            git push --set-upstream origin "$(branch)"
             git checkout main
         fi
     else
@@ -45,9 +43,10 @@ alias gc="git commit -m"
 
 # simplify git push, pull
 alias gp="git push"
-alias gpu="git push --set-upstream origin $(branch)"
 alias gl="git pull"
 
+# simplify push to remote
+function gu() { [[ ! -z $(branch) ]] && git push --set-upstream origin $(branch); }
 
 # simplify working with git branch
 function gb() {
