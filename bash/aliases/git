@@ -1,5 +1,6 @@
 #! /bin/bash
 alias branch="reload; git branch --show-current"
+alias gm="git reset --hard; git checkout main"
 
 
 # simplify git for solo development
@@ -12,7 +13,6 @@ function g() {
             git push
         else
             git push --set-upstream origin "$(branch)"
-            git checkout main
         fi
     else
         echo
@@ -46,7 +46,7 @@ alias gp="git push"
 alias gl="git pull"
 
 # simplify push to remote
-function gu() { [[ ! -z $(branch) ]] && git push --set-upstream origin $(branch); }
+function gu() { [[ ! -z "$(branch)" ]] && git push --set-upstream origin "$(branch)"; }
 
 # simplify working with git branch
 function gb() {
