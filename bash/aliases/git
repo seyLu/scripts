@@ -81,7 +81,7 @@ function gb() {
                     break
                     ;;
                 -f | --find)
-                    git branch | grep "${2}"
+                    git branch | grep --ignore-case "${2}"
                     break
                     ;;
                 --) shift; break ;;
