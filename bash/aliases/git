@@ -53,7 +53,7 @@ function gb() {
     reload
 
     if [[ $# -gt 0 ]]; then
-        local options=$( getopt -o lc:s:f: --long list,create:,switch:,find: -- "$@")
+        local options=$( getopt -o lc:s:f:d: --long list,create:,switch:,find:,delete -- "$@")
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
@@ -81,6 +81,12 @@ function gb() {
                     ;;
                 -f | --find)
                     git branch | grep --ignore-case "${2}"
+                    break
+                    ;;
+                -d | --delete)
+                    git reset --hard
+                    git checkout main
+                    git branch -d "${2}"
                     break
                     ;;
                 --) shift; break ;;
