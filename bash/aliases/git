@@ -53,7 +53,7 @@ function gb() {
     reload
 
     if [[ $# -gt 0 ]]; then
-        local options=$( getopt -o lc:s:f:d: --long list,create:,switch:,find:,delete -- "$@")
+        local options=$( getopt -o lc:s:f:d: --long list,create:,switch:,find:,delete: -- "$@")
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
