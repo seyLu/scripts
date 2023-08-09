@@ -70,6 +70,7 @@ function gb() {
                     ;;
                 -c | --create)
                     git reset --hard
+                    git pull
                     git checkout main
                     git checkout -b "${2}"
                     break
