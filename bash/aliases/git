@@ -70,9 +70,13 @@ function gb() {
                     ;;
                 -c | --create)
                     git reset --hard
-                    git pull
-                    git checkout main
-                    git checkout -b "${2}"
+                    if [[ -z $(git branch --list "$(branch)") ]]; then
+                        git pull
+                        git checkout main
+                        git checkout -b "${2}"
+                    else
+                        git checkout "${2}"
+                    fi
                     break
                     ;;
                 -s | --switch)
