@@ -70,7 +70,7 @@ function gb() {
                     ;;
                 -c | --create)
                     git reset --hard
-                    if [[ -z $(git branch --list "$(branch)") ]]; then
+                    if [[ -z "$(git branch --list "${2}")" ]]; then
                         git pull
                         git checkout main
                         git checkout -b "${2}"
