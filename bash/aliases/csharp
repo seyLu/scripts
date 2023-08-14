@@ -1,0 +1,11 @@
+#! /bin/bash
+
+function cs() {
+    if [[ -f "${1}.py" ]]; then
+        csc "${1}.cs"
+        mono "${1}.exe"
+    else
+        echo
+        echo "Usage: WIP"
+    fi
+}
