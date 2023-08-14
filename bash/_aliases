@@ -4,6 +4,7 @@ readonly aliases_path="${_SCRIPTS_PATH}/aliases"
 
 source "${aliases_path}/_"
 source "${aliases_path}/_helpers"
+source "${aliases_path}/csharp"
 source "${aliases_path}/django"
 source "${aliases_path}/docker"
 source "${aliases_path}/git"
