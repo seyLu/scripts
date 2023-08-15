@@ -1,7 +1,7 @@
 #! /bin/bash
 
 function cs() {
-    if [[ -f "${1}.py" ]]; then
+    if [[ -f "${1}.cs" ]]; then
         csc "${1}.cs"
         mono "${1}.exe"
     else
