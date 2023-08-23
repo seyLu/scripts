@@ -1,6 +1,6 @@
 #! /bin/bash
 
-readonly _SCRIPTS_PATH="$( dirname -- "${BASH_SOURCE}" )"
+declare -rx _SCRIPTS_PATH="$( dirname -- "${BASH_SOURCE}" )"
 
 source "${_SCRIPTS_PATH}/_config"
 source "${_SCRIPTS_PATH}/_colors"
