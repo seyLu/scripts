@@ -53,7 +53,7 @@ function gb() {
     reload
 
     if [[ $# -gt 0 ]]; then
-        local options=$( getopt -o lc:s:f:d: --long list,create:,switch:,find:,delete: -- "$@")
+        local options=$( getopt -o lc:s:f:d:m: --long list,create:,switch:,find:,delete:,move: -- "$@")
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
@@ -92,6 +92,14 @@ function gb() {
                     git reset --hard
                     git checkout main
                     git branch -d "${2}"
+                    break
+                    ;;
+                -m | --move)
+                    if [[ $# -lt 4 ]]; then
+                        git branch -m "$(branch)" "${2}"
+                    else
+                        git branch -m "${2}" "${4}"
+                    fi
                     break
                     ;;
                 --) shift; break ;;
