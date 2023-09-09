@@ -57,6 +57,5 @@ function blk() {
     fi
 
     ruff check "${files}" --fix
-    isort --profile=black "${files}"
     black "${files}" "${@:2}"
 }
