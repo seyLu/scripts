@@ -17,7 +17,7 @@
     _RESUME_FILE="mj_sabit_resume.pdf"
 
 [[ -z "${_WORK}" ]] && \
-    _WORK="erudifi"
+    _WORK="hutility"
 
 export _DEBUG
 export _PYTHON

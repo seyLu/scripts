@@ -1,0 +1,89 @@
+#! /bin/bash
+
+source "${_SCRIPTS_PATH}/__init__"
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#------------------------------------------------------------------------#
+# Collection of Hutility scripts
+#------------------------------------------------------------------------#
+
+readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )/Hutility"
+readonly -a valid_repos=(
+    "55"
+)
+declare -l repo=$(
+    dir=$( basename "${PWD}" )
+
+    if [[ "${valid_repos[@]}" =~ "${dir}" ]]; then
+        echo "${dir}"
+    else
+        echo "${valid_repos[0]}"
+    fi
+)
+
+
+function main() {
+    [[ $# -eq 0 ]] && list_config && return;
+
+    choices "$@"
+}
+
+
+function choices() {
+    local options=$(
+        getopt -o c: --long change_dir: -- "$@"
+    )
+
+    [[ $? -ne 0 ]] && {
+        echo "Incorrect options provided"
+        exit 1
+    }
+
+    eval set -- "${options}"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -c | --change_dir) change_dir "${2,,}"; break ;;
+            --) shift; break ;;
+            *) list_config; break ;;
+        esac
+    done
+}
+
+
+function change_dir() {
+    local repo_path="${work_path}/"
+
+    case "$1" in
+        55 | instaff) repo_path+="55" ;;
+        *) list_valid_repos; return ;;
+    esac
+
+    gnome-terminal --working-directory="${repo_path}" --no-environment --tab
+}
+
+
+function list_valid_repos() {
+    echo
+    for valid_repo in "${valid_repos[@]}"; do
+        echo -e "  --> ${CYAN}${valid_repo}${END_COLOR}"
+    done
+}
+
+
+function list_config() {
+read -rd "" details <<-EOF
+\t
+        ${RED}Company${END_COLOR}: Hutility
+        ---------------------
+    -->    ${CYAN}Repo${END_COLOR}: ${repo}
+EOF
+
+    echo -e "${details}"
+}
+
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x

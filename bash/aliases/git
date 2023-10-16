@@ -1,8 +1,15 @@
 #! /bin/bash
 
 alias branch="reload; git branch --show-current"
-alias gm="git reset --hard; git checkout main"
-alias gcs="git reset --hard; git checkout staging"  # hutility
+alias gm="f() {
+    git reset --hard;
+
+    if echo \"$PWD\" | grep -qE \"55\"; then
+        git checkout staging  # hutility
+    else
+        git checkout main
+    fi
+}; f"
 
 
 # simplify git for solo development
@@ -74,7 +81,13 @@ function gb() {
                     git reset --hard
                     if [[ -z "$(git branch --list "${2}")" ]]; then
                         git pull
-                        git checkout main
+
+                        if echo "$PWD" | grep -qE "55"; then
+                            git checkout staging  # hutility
+                        else
+                            git checkout main
+                        fi
+
                         git checkout -b "${2}"
                     else
                         git checkout "${2}"
@@ -92,7 +105,13 @@ function gb() {
                     ;;
                 -d | --delete)
                     git reset --hard
-                    git checkout main
+
+                    if echo "$PWD" | grep -qE "55"; then
+                        git checkout staging  # hutility
+                    else
+                        git checkout main
+                    fi
+
                     git branch -d "${2}"
                     break
                     ;;
