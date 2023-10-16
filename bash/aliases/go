@@ -1,1 +1,3 @@
+#! /bin/bash
+
 alias yamlfmt="~/go/bin/yamlfmt"

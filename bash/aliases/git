@@ -1,6 +1,8 @@
 #! /bin/bash
+
 alias branch="reload; git branch --show-current"
 alias gm="git reset --hard; git checkout main"
+alias gs="git reset --hard; git checkout staging"  # hutility
 
 
 # simplify git for solo development
