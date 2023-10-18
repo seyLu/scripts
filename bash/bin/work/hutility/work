@@ -32,7 +32,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o c: --long change_dir: -- "$@"
+        getopt -o v,c: --long vpn,change_dir: -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -45,6 +45,7 @@ function choices() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -c | --change_dir) change_dir "${2,,}"; break ;;
+            -v | --vpn) sudo openvpn --config "${work_path}/Hutility VPN Profile.ovpn" --auth-user-pass "${work_path}/vpn_creds.txt"; break ;;
             --) shift; break ;;
             *) list_config; break ;;
         esac
