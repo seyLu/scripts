@@ -32,7 +32,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o v,c: --long vpn,change_dir: -- "$@"
+        getopt -o c:v --long change_dir:,vpn -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
