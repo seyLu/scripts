@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd ~Documents
-git clone https://github.com/seyLu/scripts
+cd
+git clone https://github.com/seyLu/scripts Documents
 
 echo "hello, world"
