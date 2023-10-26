@@ -19,7 +19,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o p,f,i: --long push,safe_force_push,interactive_rebase: -- "$@"
+        getopt -o pfci: --long push,safe_force_push,continue_rebase,interactive_rebase: -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -34,17 +34,16 @@ function choices() {
             -p | --push) git push; break ;;
             -f | --safe_force_push) git push --force-with-lease --force-if-includes; break ;;
             -i | --interactive_rebase) git rebase -i HEAD~"$2"; break ;;
-            --) shift; break ;;
-            *)  echo "$#"
-                echo "hi"
-                if [[ $# -eq 1 ]]; then
+            -c | --continue_rebase) git rebase --continue; break;;
+            --) if [[ $# -eq 2  ]] && [[ -n "$2" ]]; then
                     git add .
                     git commit -m "$1"
                 else
-                    list_config
+                    shift
                 fi
                 break
                 ;;
+            *) help; break ;;
         esac
     done
 }
