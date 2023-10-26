@@ -1,0 +1,56 @@
+#! /bin/bash
+
+source "${_SCRIPTS_PATH}/__init__"
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#------------------------------------------------------------------------#
+# Hutility specific git alias
+#------------------------------------------------------------------------#
+
+
+function main() {
+    [[ $# -eq 0 ]] && help && return;
+    [[ $# -eq 1 ]] && {
+        git add .
+        git commit -m "$1"
+        return
+    }
+
+    choices "$@"
+}
+
+
+function choices() {
+    local options=$(
+        getopt -o c:v --long change_dir:,vpn -- "$@"
+    )
+
+    [[ $? -ne 0 ]] && {
+        echo "Incorrect options provided"
+        exit 1
+    }
+
+    eval set -- "${options}"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -c | --change_dir) change_dir "${2,,}"; break ;;
+            -v | --vpn) sudo openvpn --config "${work_path}/Hutility VPN Profile.ovpn" --auth-user-pass "${work_path}/vpn_creds.txt"; break ;;
+            --) shift; break ;;
+            *) list_config; break ;;
+        esac
+    done
+}
+
+
+function help() {
+    echo
+    echo "Hutility specific git alias"
+    echo
+}
+
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x
