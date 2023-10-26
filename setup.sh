@@ -17,5 +17,6 @@ fi
 echo "# Initialize External Scripts" >> ~/.bash_aliases
 echo '[[ -z "${_SCRIPTS_PATH}" ]] && source "${HOME}/Documents/repos/scripts/bash/__init__"' >> ~/.bash_aliases
 
-source ~/.bashrc
+source "${HOME}/Documents/repos/scripts/bash/__init__"'
 build
+reload
