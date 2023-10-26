@@ -3,7 +3,7 @@
 ## Setup using `setup.sh`
 
 ```bash
-bash <(curl -s https://github.com/seyLu/scripts)
+bash <(curl -s https://raw.githubusercontent.com/seyLu/scripts/main/setup.sh)
 ```
 
 ## Manual Setup
