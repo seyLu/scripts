@@ -11,11 +11,7 @@ source "${_SCRIPTS_PATH}/__init__"
 
 function main() {
     [[ $# -eq 0 ]] && help && return;
-    [[ $# -eq 1 ]] && {
-        git add .
-        git commit -m "$1"
-        return
-    }
+
 
     choices "$@"
 }
@@ -23,7 +19,11 @@ function main() {
 
 function choices() {
     local options=$(
+<<<<<<< HEAD
         getopt -o p,f --long push,safe_force_push -- "$@"
+=======
+        getopt -o p,f,i: --long push,safe_force_push,interactive_rebase: -- "$@"
+>>>>>>> 28a3575 (feat: add safe_force_push option)
     )
 
     [[ $? -ne 0 ]] && {
@@ -37,8 +37,18 @@ function choices() {
         case "$1" in
             -p | --push) git push; break ;;
             -f | --safe_force_push) git push --force-with-lease --force-if-includes; break ;;
+            -i | --interactive_rebase) git rebase -i HEAD~"$2"; break ;;
             --) shift; break ;;
-            *) list_config; break ;;
+            *)  echo "$#"
+                echo "hi"
+                if [[ $# -eq 1 ]]; then
+                    git add .
+                    git commit -m "$1"
+                else
+                    list_config
+                fi
+                break
+                ;;
         esac
     done
 }
