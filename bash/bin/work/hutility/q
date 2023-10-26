@@ -12,7 +12,6 @@ source "${_SCRIPTS_PATH}/__init__"
 function main() {
     [[ $# -eq 0 ]] && help && return;
 
-
     choices "$@"
 }
 
@@ -37,7 +36,7 @@ function choices() {
             -c | --continue_rebase) git rebase --continue; break;;
             --) if [[ $# -eq 2  ]] && [[ -n "$2" ]]; then
                     git add .
-                    git commit -m "$1"
+                    git commit -m "$2"
                 else
                     shift
                 fi
