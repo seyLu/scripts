@@ -1,6 +1,12 @@
 # Collection of Scripts
 
-### Usage: Bash Shell Scripts
+## Setup using `setup.sh`
+
+```bash
+bash <(curl -s https://github.com/seyLu/scripts)
+```
+
+## Manual Setup
 
 1. Append on `~/.bash_aliases`
 
