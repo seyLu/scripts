@@ -1,12 +1,10 @@
 #!/bin/bash
 
-cd ~/Documents
-
-if [[ ! -d repos ]]; then
-    mkdir repos
+if [[ ! -d ~/Documents/repos ]]; then
+    mkdir ~/Documents/repos
 fi
 
-cd repos
+cd ~/Documents/repos
 
 git clone https://github.com/seyLu/scripts.git
 
