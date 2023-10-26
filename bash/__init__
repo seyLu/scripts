@@ -19,7 +19,7 @@ function execute() {
 
 # Professional Work related scripts
 function work { execute "work/${_WORK}/work" "$@"; }
-function w { execute "work/${_WORK}/w" "$@"; }
+function q { execute "work/${_WORK}/q" "$@"; }
 
 # Better pwd and ls
 function list { execute "list" "$@"; }
