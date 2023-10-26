@@ -19,11 +19,7 @@ function main() {
 
 function choices() {
     local options=$(
-<<<<<<< HEAD
-        getopt -o p,f --long push,safe_force_push -- "$@"
-=======
         getopt -o p,f,i: --long push,safe_force_push,interactive_rebase: -- "$@"
->>>>>>> 28a3575 (feat: add safe_force_push option)
     )
 
     [[ $? -ne 0 ]] && {
