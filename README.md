@@ -30,21 +30,21 @@ curl -s https://raw.githubusercontent.com/seyLu/scripts/main/setup.sh | bash
 
 #### 1. Clone the repo
 
-    ```bash
-    git clone https://github.com/seyLu/scripts.git
-    ```
+```bash
+git clone https://github.com/seyLu/scripts.git
+```
 
 #### 2. Append on `~/.bash_aliases`
 
-    ```bash
-    # Initialize External Scripts
-    [[ -z "${_SCRIPTS_PATH}" ]] && source "${HOME}/<path_to_scripts>/scripts/bash/__init__"
-    ```
+```bash
+# Initialize External Scripts
+[[ -z "${_SCRIPTS_PATH}" ]] && source "${HOME}/<path_to_scripts>/scripts/bash/__init__"
+```
 
 #### 3. Then run
 
-    ```bash
-    build
-    ```
+```bash
+build
+```
 
 #### 4. Enjoy
