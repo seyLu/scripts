@@ -18,7 +18,6 @@
 
 <br>
 
-
 ### Setup using `setup.sh` (Recommeded)
 
 ```bash
@@ -30,6 +29,7 @@ curl -s https://raw.githubusercontent.com/seyLu/scripts/main/setup.sh | bash
 ### Manual Setup
 
 #### 1. Clone the repo
+
     ```bash
     git clone https://github.com/seyLu/scripts.git
     ```
@@ -48,4 +48,3 @@ curl -s https://raw.githubusercontent.com/seyLu/scripts/main/setup.sh | bash
     ```
 
 #### 4. Enjoy
-

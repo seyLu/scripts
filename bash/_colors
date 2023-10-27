@@ -41,4 +41,3 @@ declare -rx BG_LIGHT_CYAN="\e[106m"
 declare -rx BG_WHITE="\e[107m"
 
 declare -rx END_COLOR="\e[0m"
-
