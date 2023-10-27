@@ -3,7 +3,7 @@
     <h1>Bash Scripts</h1>
     <p>A collection of Bash aliases and scripts</p>
     <p>
-        <a href="https://www.gnu.org/software/bash/manual/html_node/index.html"><img src="https://img.shields.io/badge/shell-bash-green" alt="Python 3.11+ badge"></a>
+        <a href="https://www.gnu.org/software/bash/manual/html_node/index.html"><img src="https://badgen.net/badge/icon/bash?icon=terminal&label&color=1f425f" alt="Python 3.11+ badge"></a>
         <a href="https://google.github.io/styleguide/shellguide.html"><img src="https://img.shields.io/badge/code%20style-google-shell.svg" alt="PEP8 badge"></a>
         <a href="https://github.com/seyLu/scripts/blob/main/LICENSE"><img src="https://img.shields.io/github/license/seyLu/scripts.svg" alt="MIT License"></a>
     </p>
