@@ -1,5 +1,5 @@
 <div align="center">
-    <img height=100 src="https://github.com/seyLu/scripts/blob/main/static/icons/bash.svg" alt="Bash Scripts Icon">
+    <img height=100 src="https://github.com/seyLu/scripts/blob/main/bash.svg" alt="Bash Scripts Icon">
     <h1>Bash Scripts</h1>
     <p>A collection of Bash aliases and scripts</p>
     <p>
