@@ -3,7 +3,12 @@
 # Django manage.py
 function dj () {
     if [[ $# -gt 0 ]]; then
-        local options=$( getopt -o p:a:MmxX:cts --long startproject:,startapp:makemigrations:migrate:runserver:,_runserver:collectstatic,tailwind_build,createsuperuser -- "$@")
+        local options=$(
+            getopt \
+            -o p:a:MmxX:ctTs \
+            --long startproject:,startapp:makemigrations:migrate:runserver:,_runserver:collectstatic,tailwind_build,tailwind_start,createsuperuser \
+            -- "$@"
+        )
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
@@ -19,9 +24,10 @@ function dj () {
                 -M | --makemigrations) py manage makemigrations; break ;;
                 -m | --migrate) py manage migrate; break;;
                 -x | --runserver) py manage runserver; break ;;
-                -X | --_runserver) py manage runserver "$@"; break ;;
+                -X | --_runserver) py manage runserver "${@:2}"; break ;;
                 -c | --collectstatic) py manage collectstatic --noinput; break ;;
-                -t | --tailwind_build) py manage tailwind build; break ;;
+                -t | --tailwind_start) py manage tailwind start; break ;;
+                -T | --tailwind_build) py manage tailwind build; break ;;
                 -s | --createsuperuser)
                     export DJANGO_SUPERUSER_USERNAME="admin"
                     export DJANGO_SUPERUSER_EMAIL="admin@email.com"
