@@ -55,7 +55,7 @@ alias gp="git push"
 alias gl="git pull"
 
 # simplify push to remote
-function gu() { [[ ! -z "$(branch)" ]] && git push --set-upstream origin "$(branch)"; }
+alias gu="f() { [[ ! -z \"$(branch)\" ]] && git push --set-upstream origin \"$(branch)\"; }; f"
 
 # simplify working with git branch
 function gb() {
