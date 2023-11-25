@@ -32,21 +32,21 @@ function choices() {
         case "$1" in
             -c | --create)
                 git reset --hard;
-                if [[ -z "$(git branch --list "${2}")" ]]; then
+                if [[ -z "$(git branch --list "$2")" ]]; then
                     git pull
 
-                    git branch -c "${2}";
+                    git branch -c "$2";
                 else
-                    git checkout "${2}";
+                    git checkout "$2";
                 fi
                 break
                 ;;
-            -s | --create)
+            -s | --switch)
                 git reset --hard;
-                git checkout "${2}";
+                git checkout "$2";
                 break
                 ;;
-            --) break ;;
+            --) shift; break ;;
             *) help; break ;;
         esac
     done
@@ -58,6 +58,7 @@ function help() {
     echo "Hutility specific git branch alias"
     echo
 }
+
 
 main "$@"
 

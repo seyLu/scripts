@@ -2,7 +2,7 @@
 
 alias branch="reload; git branch --show-current"
 alias gm="f() {
-    git reset --hard;
+    git reset --hard
 
     if echo \"$PWD\" | grep -qE \"55\"; then
         git checkout staging  # hutility
@@ -55,7 +55,11 @@ alias gp="git push"
 alias gl="git pull"
 
 # simplify push to remote
-alias gu="f() { [[ ! -z \"$(branch)\" ]] && git push --set-upstream origin \"$(branch)\"; }; f"
+alias gu="f() {
+    if [[ ! -z \"$(branch)\" ]]; then
+        git push --set-upstream origin \"$(branch)\";
+    fi
+} f"
 
 # simplify working with git branch
 function gb() {
@@ -79,7 +83,7 @@ function gb() {
                     ;;
                 -c | --create)
                     git reset --hard
-                    if [[ -z "$(git branch --list "${2}")" ]]; then
+                    if [[ -z "$(git branch --list "$2")" ]]; then
                         git pull
 
                         if echo "$PWD" | grep -qE "55"; then
@@ -88,19 +92,19 @@ function gb() {
                             git checkout main
                         fi
 
-                        git checkout -b "${2}"
+                        git checkout -b "$2"
                     else
-                        git checkout "${2}"
+                        git checkout "$2"
                     fi
                     break
                     ;;
                 -s | --switch)
                     git reset --hard
-                    git checkout "${2}"
+                    git checkout "$2"
                     break
                     ;;
                 -f | --find)
-                    git branch | grep --ignore-case "${2}"
+                    git branch | grep --ignore-case "$2"
                     break
                     ;;
                 -d | --delete)
@@ -112,14 +116,14 @@ function gb() {
                         git checkout main
                     fi
 
-                    git branch -d "${2}"
+                    git branch -d "$2"
                     break
                     ;;
                 -m | --move)
                     if [[ $# -lt 4 ]]; then
-                        git branch -m "$(branch)" "${2}"
+                        git branch -m "$(branch)" "$2"
                     else
-                        git branch -m "${2}" "${4}"
+                        git branch -m "$2" "$4"
                     fi
                     break
                     ;;
