@@ -1,0 +1,64 @@
+#! /bin/bash
+
+source "${_SCRIPTS_PATH}/__init__"
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#------------------------------------------------------------------------#
+# Hutility specific git branch alias
+#------------------------------------------------------------------------#
+
+
+function main() {
+    [[ $# -eq 0 ]] && help && return;
+
+    choices "$@"
+}
+
+
+function choices() {
+    local options=$(
+        getopt -o c:s: --long create:,switch: -- "$@"
+    )
+
+    [[ $? -ne 0 ]] && {
+        echo "Incorrect options provided"
+        exit 1
+    }
+
+    eval set -- "${options}"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -c | --create)
+                git reset --hard;
+                if [[ -z "$(git branch --list "${2}")" ]]; then
+                    git pull
+
+                    git branch -c "${2}";
+                else
+                    git checkout "${2}";
+                fi
+                break
+                ;;
+            -s | --create)
+                git reset --hard;
+                git checkout "${2}";
+                break
+                ;;
+            --) break ;;
+            *) help; break ;;
+        esac
+    done
+}
+
+
+function help() {
+    echo
+    echo "Hutility specific git branch alias"
+    echo
+}
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x
