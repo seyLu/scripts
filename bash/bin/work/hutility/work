@@ -32,7 +32,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o c:v --long change_dir:,vpn -- "$@"
+        getopt -o c:vp --long change_dir:,vpn,instaff-chrome-profiles -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -46,6 +46,7 @@ function choices() {
         case "$1" in
             -c | --change_dir) change_dir "${2,,}"; break ;;
             -v | --vpn) sudo openvpn --config "${work_path}/Hutility VPN Profile.ovpn" --auth-user-pass "${work_path}/vpn_creds.txt"; break ;;
+            -p | --instaff-chrome-profiles) open_instaff_chrome_profiles; break ;;
             --) shift; break ;;
             *) list_config; break ;;
         esac
@@ -69,6 +70,16 @@ function list_valid_repos() {
     echo
     for valid_repo in "${valid_repos[@]}"; do
         echo -e "  --> ${CYAN}${valid_repo}${END_COLOR}"
+    done
+}
+
+
+function open_instaff_chrome_profiles() {
+    local -r CHROME_EXE="/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
+    local -ar PROFILES=(1 2 3 4)
+
+    for profile in "${PROFILES[@]}"; do
+        "${CHROME_EXE}" --profile-directory="Profile ${profile}" --incognito http://localhost:8067
     done
 }
 
