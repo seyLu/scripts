@@ -2,3 +2,28 @@
 
 # Run when docker becomes a bitch
 alias prune="docker system prune -f"
+
+# docker alias
+function d() {
+    if [[ $# -gt 0 ]]; then
+        local options=$( getopt -o C,I: --long remove-stopped-containers,grep-remove-image: -- "$@")
+
+        [[ $? -ne 0 ]] && {
+            echo "Incorrect options provided"
+            exit 1
+        }
+
+        eval set -- "${options}"
+
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+                -C | --remove-stopped-containers) docker rm "$(docker ps --filter "status=exited" --filter "status=dead" -q)" 2> /dev/null; break ;;
+                -I | --grep-remove-image) docker rmi "$(docker images --format="{{.Repository}} {{.ID}}" |  grep "my-app" |  cut -d' ' -f2)"; break ;;
+                --) shift; break ;;
+                *) branch; break ;;
+            esac
+        done
+    else
+        echo "Docker alias"
+    fi
+}
