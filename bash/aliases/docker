@@ -3,10 +3,13 @@
 # Run when docker becomes a bitch
 alias prune="docker system prune -f"
 
+function get-docker-image-id-from-tag() { docker images --format="{{.Repository}}:{{.Tag}} {{.ID}}" |  grep "$1" |  cut -d' ' -f2 ;}
+function get-docker-container-id-from-tag() { docker ps --format="{{.Image}} {{.ID}}" |  grep "$1" |  cut -d' ' -f2 ;}
+
 # docker alias
 function d() {
     if [[ $# -gt 0 ]]; then
-        local options=$( getopt -o C,I: --long remove-stopped-containers,grep-remove-image: -- "$@")
+        local options=$( getopt -o CI:b:e: --long remove-stopped-containers,grep-remove-image:,build-image:,exec-on-container: -- "$@")
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
@@ -18,7 +21,19 @@ function d() {
         while [[ $# -gt 0 ]]; do
             case "$1" in
                 -C | --remove-stopped-containers) docker rm "$(docker ps --filter "status=exited" --filter "status=dead" -q)" 2> /dev/null; break ;;
-                -I | --grep-remove-image) docker rmi "$(docker images --format="{{.Repository}} {{.ID}}" |  grep "my-app" |  cut -d' ' -f2)"; break ;;
+                -I | --grep-remove-image) docker rmi "$(get-docker-image-id-from-tag "$2")"; break ;;
+                -b | --build-image) docker build -t "$2" .; break ;;
+                -e | --exec-on-container)
+                    local container_shell="bash"
+
+                    if [[ "$3" == "--" && -n "$4" ]]; then
+                        container_shell="$4"
+                    fi
+
+                    docker exec -it "$(get-docker-container-id-from-tag "$2")" "/bin/${container_shell}"
+
+                    break
+                    ;;
                 --) shift; break ;;
                 *) branch; break ;;
             esac
