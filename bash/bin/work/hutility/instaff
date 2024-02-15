@@ -54,7 +54,7 @@ function choices() {
             -e | --error_log) docker exec -it "${instaff_app}" bash -c "tail /var/log/instaff/error_log.log"; break ;;
             -m | --migrate) docker exec -it "${instaff_app}" bash -c "cd www/hudbmigrator; python hudami.py --run"; break ;;
             -a | --app)
-                if [[ $# -eq 2 ]]; then
+                if [[ $# -eq 3 ]]; then
                     docker exec -it "${instaff_app}" bash -c "cd www; python instaff_${2}.py"
                 else
                     docker exec -it "${instaff_app}" bash -c "cd www; python instaff_web.py"
