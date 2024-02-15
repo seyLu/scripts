@@ -46,8 +46,7 @@ function choices() {
                 docker compose -f "${instaff_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"
                 docker exec -it "${instaff_app}" bash -c " \
                     sed -i 's/\/usr\/libexec\///g' /etc/ssh/sshd_config; \
-                    pip install ${instaff_missing_deps[*]}; \
-                    cd www; python instaff_web.py \
+                    pip install ${instaff_missing_deps[*]} \
                 "
                 break ;;
             -x | --start) docker compose -f "${instaff_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"; break ;;
