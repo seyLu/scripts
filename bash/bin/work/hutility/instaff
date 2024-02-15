@@ -18,8 +18,8 @@ readonly -a instaff_missing_deps=(
     "pypdf2"
     "sentry_sdk"
 )
+readonly instaff_app="instaff_app"
 
-alias instaff_exec="docker exec -it instaff_app bash -c"
 
 function main() {
     [[ $# -eq 0 ]] && help && return;
@@ -44,7 +44,7 @@ function choices() {
         case "$1" in
             -i | --init)
                 docker compose -f "${instaff_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"
-                instaff_exec " \
+                docker exec -it "${instaff_app}" bash -c " \
                     sed -i 's/\/usr\/libexec\///g' /etc/ssh/sshd_config; \
                     pip install ${instaff_missing_deps[*]}; \
                     cd www; python instaff_web.py \
@@ -52,13 +52,13 @@ function choices() {
                 break ;;
             -x | --start) docker compose -f "${instaff_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"; break ;;
             -X | --stop) docker compose -f "${instaff_path}/docker/docker-compose.yml" stop "${instaff_containers[@]}"; break ;;
-            -e | --error_log) instaff_exec "tail /var/log/instaff/error_log.log"; break ;;
-            -m | --migrate) instaff_exec "cd www/hudbmigrator; python hudami.py --run"; break ;;
+            -e | --error_log) docker exec -it "${instaff_app}" bash -c "tail /var/log/instaff/error_log.log"; break ;;
+            -m | --migrate) docker exec -it "${instaff_app}" bash -c "cd www/hudbmigrator; python hudami.py --run"; break ;;
             -a | --app)
                 if [[ $# -eq 2 ]]; then
-                    instaff_exec "cd www; python instaff_${2}.py"
+                    docker exec -it "${instaff_app}" bash -c "cd www; python instaff_${2}.py"
                 else
-                    instaff_exec "cd www; python instaff_web.py"
+                    docker exec -it "${instaff_app}" bash -c "cd www; python instaff_web.py"
                 fi
                 break ;;
             --) break ;;
