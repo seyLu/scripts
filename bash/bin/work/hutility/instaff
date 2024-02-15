@@ -8,7 +8,7 @@ source "${_SCRIPTS_PATH}/__init__"
 # Instaff specific commands
 #------------------------------------------------------------------------#
 
-readonly instaff_path="/home/seylu/Documents/55"
+readonly instaff_path="/home/seylu/Documents/Work/55"
 readonly -a instaff_containers=(
     "db"
     "webproxy"
