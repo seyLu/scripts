@@ -1,0 +1,80 @@
+#! /bin/bash
+
+source "${_SCRIPTS_PATH}/__init__"
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#------------------------------------------------------------------------#
+# Instaff specific commands
+#------------------------------------------------------------------------#
+
+readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )/55"
+readonly -a instaff_containers=(
+    "db"
+    "webproxy"
+    "instaff_app"
+)
+readonly -a instaff_missing_deps=(
+    "pypdf2"
+    "sentry_sdk"
+)
+
+alias instaff_exec="docker exec -it instaff_app bash -c"
+
+function main() {
+    [[ $# -eq 0 ]] && help && return;
+
+    choices "$@"
+}
+
+
+function choices() {
+    local options=$(
+        getopt -o ixXema: --long init,start,stop,error_log,migrate,app: -- "$@"
+    )
+
+    [[ $? -ne 0 ]] && {
+        echo "Incorrect options provided"
+        exit 1
+    }
+
+    eval set -- "${options}"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -i | --init)
+                docker compose -f "${work_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"
+                instaff_exec " \
+                    sed -i 's/\/usr\/libexec\///g' /etc/ssh/sshd_config; \
+                    pip install ${instaff_missing_deps[*]}; \
+                    cd www; python instaff_web.py \
+                "
+                break ;;
+            -x | --start) docker compose -f "${work_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"; break ;;
+            -X | --stop) docker compose -f "${work_path}/docker/docker-compose.yml" stop "${instaff_containers[@]}"; break ;;
+            -e | --error_log) instaff_exec "tail /var/log/instaff/error_log.log"; break ;;
+            -m | --migrate) instaff_exec "cd www/hudbmigrator; python hudami.py --run"; break ;;
+            -a | --app)
+                if [[ $# -eq 2 ]]; then
+                    instaff_exec "cd www; python instaff_${2}.py"
+                else
+                    instaff_exec "cd www; python instaff_web.py"
+                fi
+                break ;;
+            --) break ;;
+            *) help; break ;;
+        esac
+    done
+}
+
+
+function help() {
+    echo
+    echo "Instaff specific commands"
+    echo
+}
+
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x
