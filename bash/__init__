@@ -21,6 +21,7 @@ function execute() {
 function work { execute "work/${_WORK}/work" "$@"; }
 function q { execute "work/${_WORK}/q" "$@"; }
 function qb { execute "work/${_WORK}/qb" "$@"; }
+function instaff { execute "work/${_WORK}/instaff" "$@"; }
 
 # Better pwd and ls
 function list { execute "list" "$@"; }

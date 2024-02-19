@@ -57,5 +57,5 @@ function blk() {
     fi
 
     ruff check "${files}" --fix
-    black "${files}" "${@:2}"
+    ruff format "${files}"
 }
