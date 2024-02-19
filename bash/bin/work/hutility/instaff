@@ -9,6 +9,8 @@ source "${_SCRIPTS_PATH}/__init__"
 #------------------------------------------------------------------------#
 
 readonly instaff_path="/home/seylu/Documents/Work/55"
+readonly config_ini_path="${instaff_path}/www/config.ini"
+readonly config_ini_docker_path="${instaff_path}/docker/confs/config.ini.docker"
 readonly -a instaff_containers=(
     "db"
     "webproxy"
@@ -18,9 +20,16 @@ readonly -a instaff_missing_deps=(
     "pypdf2"
     "sentry_sdk"
 )
+readonly -a instaff_missing_docker_config=(
+    "S3_REGION_NAME"
+    "S3_BUCKET"
+    "S3_URL"
+    "S3_ACCESS_ID"
+    "S3_PRIVATE_KEY"
+    "MAILGUN_API_KEY"
+    "PDFPROCESSOR_JOB_API_KEY"
+)
 readonly instaff_app="instaff_app"
-readonly config_ini_path="$(find "${instaff_path}" -maxdepth 2  -type f -name "config.ini")"
-readonly config_ini_docker_path="$(find "${instaff_path}" -type f -name "config.ini.docker")"
 
 
 function main() {
@@ -45,6 +54,10 @@ function choices() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
             -i | --init)
+                for key in "${instaff_missing_docker_config[@]}"; do
+                    to_docker_config "${key}"
+                done
+
                 docker compose -f "${instaff_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"
                 docker exec -it "${instaff_app}" bash -c " \
                     sed -i 's/\/usr\/libexec\///g' /etc/ssh/sshd_config; \
@@ -56,13 +69,7 @@ function choices() {
             -X | --stop) docker compose -f "${instaff_path}/docker/docker-compose.yml" stop "${instaff_containers[@]}"; break ;;
             -e | --error_log) docker exec -it "${instaff_app}" bash -c "tail /var/log/instaff/error_log.log -n 40"; break ;;
             -m | --migrate) docker exec -it "${instaff_app}" bash -c "cd www/hudbmigrator; python hudami.py --run"; break ;;
-            -a | --app)
-                if [[ $# -eq 3 ]]; then
-                    docker exec -it "${instaff_app}" bash -c "cd www; python instaff_${2}.py"
-                else
-                    docker exec -it "${instaff_app}" bash -c "cd www; python instaff_web.py"
-                fi
-                break ;;
+            -a | --app) docker exec -it "${instaff_app}" bash -c "cd www; python instaff_${2}.py"; break ;;
             -n | --ngrok)
                 ngrok http --host-header=rewrite localhost:8066 &
                 readonly ngrok_pid=$!
@@ -73,10 +80,8 @@ function choices() {
                     readonly postback_url_env="PDFPROCESSOR_JOB_POSTBACK_URL"
                     readonly postback_url="${ngrok_url}/api/v3/pdfprocessor_postback"
 
-                    sed -i "s|${postback_url_env}=.*|${postback_url_env}=${postback_url}|" "${config_ini_path}"
-                    sed -i "s|${postback_url_env}=.*|${postback_url_env}=${postback_url}|" "${config_ini_docker_path}"
-
-                    to_docker_config "PDFPROCESSOR_JOB_API_KEY"
+                    sed -i "s|${postback_url_env} =.*|^${postback_url_env} = ${postback_url}|" "${config_ini_path}"
+                    to_docker_config "${postback_url_env}"
                 )
                 wait "${ngrok_pid}"
                 break ;;
@@ -94,12 +99,23 @@ function help() {
 }
 
 
-function get_env() { grep --color=never "${1}" "${config_ini_path}" | sed "s/${1}=//"; }
-function to_docker_config() {
-    readonly key="$1"
-    readonly val="$(get_env "$1")"
+function get_env() {
+    local key="$1"
+    local line="$(grep --color=never "^${key} =" "${config_ini_path}" | tr -d "\r\n")"
 
-    sed -i "s|${key}=.*|${key}=${val}|" "${config_ini_docker_path}"
+    if [[ "${line}" =~ \| ]]; then
+        echo "${line}" | sed "s/^${key} = //"
+    else
+        echo "${line}" | sed "s|^${key} = ||"
+    fi
+}
+
+
+function to_docker_config() {
+    local key="$1"
+    local val="$(get_env "$1")"
+
+    sed -i "s|^${key} =.*|${key} = ${val}|" "${config_ini_docker_path}"
 }
 
 
