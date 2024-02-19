@@ -76,10 +76,7 @@ function choices() {
                     sed -i "s|${postback_url_env}=.*|${postback_url_env}=${postback_url}|" "${config_ini_path}"
                     sed -i "s|${postback_url_env}=.*|${postback_url_env}=${postback_url}|" "${config_ini_docker_path}"
 
-                    readonly api_key_env="PDFPROCESSOR_JOB_API_KEY"
-                    readonly api_key="$(get_env "${api_key_env}")"
-
-                    sed -i "s|${api_key_env}=.*|${api_key_env}=${api_key}|" "${config_ini_docker_path}"
+                    to_docker_config "PDFPROCESSOR_JOB_API_KEY"
                 )
                 wait "${ngrok_pid}"
                 break ;;
@@ -98,6 +95,12 @@ function help() {
 
 
 function get_env() { grep --color=never "${1}" "${config_ini_path}" | sed "s/${1}=//"; }
+function to_docker_config() {
+    readonly key="$1"
+    readonly val="$(get_env "$1")"
+
+    sed -i "s|${key}=.*|${key}=${val}|" "${config_ini_docker_path}"
+}
 
 
 main "$@"
