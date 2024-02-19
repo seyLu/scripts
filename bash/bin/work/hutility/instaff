@@ -80,7 +80,7 @@ function choices() {
                     readonly postback_url_env="PDFPROCESSOR_JOB_POSTBACK_URL"
                     readonly postback_url="${ngrok_url}/api/v3/pdfprocessor_postback"
 
-                    sed -i "s|${postback_url_env} =.*|^${postback_url_env} = ${postback_url}|" "${config_ini_path}"
+                    sed -i "s|^${postback_url_env} =.*|${postback_url_env} = ${postback_url}|" "${config_ini_path}"
                     to_docker_config "${postback_url_env}"
                 )
                 wait "${ngrok_pid}"
