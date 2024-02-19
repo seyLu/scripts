@@ -77,7 +77,7 @@ function choices() {
                     sed -i "s|${postback_url_env}=.*|${postback_url_env}=${postback_url}|" "${config_ini_docker_path}"
 
                     readonly api_key_env="PDFPROCESSOR_JOB_API_KEY"
-                    readonly api_key="$(grep --color=never "${api_key_env}" "${config_ini_path}" | sed "s/${api_key_env}=//")"
+                    readonly api_key="$(get_env "${api_key_env}")"
 
                     sed -i "s|${api_key_env}=.*|${api_key_env}=${api_key}|" "${config_ini_docker_path}"
                 )
@@ -95,6 +95,9 @@ function help() {
     echo "Instaff specific commands"
     echo
 }
+
+
+function get_env() { return "$(grep --color=never "${1}" "${config_ini_path}" | sed "s/${1}=//")"; }
 
 
 main "$@"
