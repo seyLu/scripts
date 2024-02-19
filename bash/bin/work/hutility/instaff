@@ -32,7 +32,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o ixXema:n --long init,start,stop,error_log,migrate,app:ngrok -- "$@"
+        getopt -o iIxXema:n --long init,down,start,stop,error_log,migrate,app:ngrok -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -51,6 +51,7 @@ function choices() {
                     pip install ${instaff_missing_deps[*]} \
                 "
                 break ;;
+            -I | --down) docker compose -f "${instaff_path}/docker/docker-compose.yml" down; break ;;
             -x | --start) docker compose -f "${instaff_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"; break ;;
             -X | --stop) docker compose -f "${instaff_path}/docker/docker-compose.yml" stop "${instaff_containers[@]}"; break ;;
             -e | --error_log) docker exec -it "${instaff_app}" bash -c "tail /var/log/instaff/error_log.log -n 40"; break ;;
