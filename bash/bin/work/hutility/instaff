@@ -19,6 +19,8 @@ readonly -a instaff_missing_deps=(
     "sentry_sdk"
 )
 readonly instaff_app="instaff_app"
+readonly config_ini_path="$(find "${instaff_path}" -maxdepth 2  -type f -name "config.ini")"
+readonly config_ini_docker_path="$(find "${instaff_path}" -type f -name "config.ini.docker")"
 
 
 function main() {
@@ -30,7 +32,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o ixXema: --long init,start,stop,error_log,migrate,app: -- "$@"
+        getopt -o ixXema:n --long init,start,stop,error_log,migrate,app:ngrok -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -59,6 +61,26 @@ function choices() {
                 else
                     docker exec -it "${instaff_app}" bash -c "cd www; python instaff_web.py"
                 fi
+                break ;;
+            -n | --ngrok)
+                ngrok http --host-header=rewrite localhost:8066 &
+                readonly ngrok_pid=$!
+                (
+                    sleep 5
+                    readonly ngrok_url="$(curl -s http://127.0.0.1:4040/api/tunnels | grep -o --color=never '"public_url":"[^"]*' | sed 's/"public_url":"//')"
+
+                    readonly postback_url_env="PDFPROCESSOR_JOB_POSTBACK_URL"
+                    readonly postback_url="${ngrok_url}/api/v3/pdfprocessor_postback"
+
+                    sed -i "s|${postback_url_env}=.*|${postback_url_env}=${postback_url}|" "${config_ini_path}"
+                    sed -i "s|${postback_url_env}=.*|${postback_url_env}=${postback_url}|" "${config_ini_docker_path}"
+
+                    readonly api_key_env="PDFPROCESSOR_JOB_API_KEY"
+                    readonly api_key="$(grep --color=never "${api_key_env}" "${config_ini_path}" | sed "s/${api_key_env}=//")"
+
+                    sed -i "s|${api_key_env}=.*|${api_key_env}=${api_key}|" "${config_ini_docker_path}"
+                )
+                wait "${ngrok_pid}"
                 break ;;
             --) break ;;
             *) help; break ;;
