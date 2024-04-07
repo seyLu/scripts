@@ -35,9 +35,8 @@ function choices() {
                 if [[ -z "$(git branch --list "$2")" ]]; then
                     git pull
                     git branch -c "$2"
-                else
-                    git checkout "$2"
                 fi
+                git checkout "$2"
                 break
                 ;;
             -s | --switch)
