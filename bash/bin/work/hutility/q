@@ -18,7 +18,7 @@ function main() {
 
 function choices() {
     local options=$(
-        getopt -o pfci: --long push,safe_force_push,continue_rebase,interactive_rebase: -- "$@"
+        getopt -o lpfci: --long log,push,safe_force_push,continue_rebase,interactive_rebase: -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
@@ -30,6 +30,7 @@ function choices() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
+            -l | --log) git log --oneline; break ;;
             -p | --push) git push; break ;;
             -f | --safe_force_push) git push --force-with-lease --force-if-includes; break ;;
             -i | --interactive_rebase) git rebase -i HEAD~"$2"; break ;;
