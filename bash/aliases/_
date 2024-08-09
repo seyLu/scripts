@@ -16,6 +16,10 @@ alias snupdate="snap-store --quit && sudo snap refresh snap-store"
 alias ls="ls --color=yes"
 alias grep="grep --color=always"
 
+# Open files app
+alias files="xdg-open ."
+alias repos="xdg-open Documents/repos"
+
 # Colored Grep
 alias    grey-grep="GREP_COLOR='1;30' grep --color=always"
 alias     red-grep="GREP_COLOR='1;31' grep --color=always"
