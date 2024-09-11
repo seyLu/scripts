@@ -9,8 +9,10 @@ source "${_SCRIPTS_PATH}/__init__"
 #------------------------------------------------------------------------#
 
 readonly instaff_path="/home/seylu/Documents/Work/55"
+readonly docker_path="${instaff_path}/devops/docker"
+readonly compose_path="${docker_path}/docker-compose.yml"
 readonly config_ini_path="${instaff_path}/www/config.ini"
-readonly config_ini_docker_path="${instaff_path}/docker/confs/config.ini.docker"
+readonly config_ini_docker_path="${docker_path}/confs/config.ini.docker"
 readonly -a instaff_containers=(
     "db"
     "webproxy"
@@ -58,15 +60,15 @@ function choices() {
                     to_docker_config "${key}"
                 done
 
-                docker compose -f "${instaff_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"
+                docker compose -f "${compose_path}" up -d "${instaff_containers[@]}"
                 docker exec -it "${instaff_app}" bash -c " \
                     sed -i 's/\/usr\/libexec\///g' /etc/ssh/sshd_config; \
                     pip install ${instaff_missing_deps[*]} \
                 "
                 break ;;
-            -I | --down) docker compose -f "${instaff_path}/docker/docker-compose.yml" down; break ;;
-            -x | --start) docker compose -f "${instaff_path}/docker/docker-compose.yml" up -d "${instaff_containers[@]}"; break ;;
-            -X | --stop) docker compose -f "${instaff_path}/docker/docker-compose.yml" stop "${instaff_containers[@]}"; break ;;
+            -I | --down) docker compose -f "${compose_path}" down; break ;;
+            -x | --start) docker compose -f "${compose_path}" up -d "${instaff_containers[@]}"; break ;;
+            -X | --stop) docker compose -f "${compose_path}" stop "${instaff_containers[@]}"; break ;;
             -e | --error_log) docker exec -it "${instaff_app}" bash -c "tail /var/log/instaff/error_log.log -n 40"; break ;;
             -m | --migrate) docker exec -it "${instaff_app}" bash -c "cd www/hudbmigrator; python hudami.py --run"; break ;;
             -a | --app) docker exec -it "${instaff_app}" bash -c "cd www; python instaff_${2}.py"; break ;;
