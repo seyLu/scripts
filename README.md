@@ -34,7 +34,7 @@ curl -s https://raw.githubusercontent.com/seyLu/scripts/main/setup.sh | bash
 git clone https://github.com/seyLu/scripts.git
 ```
 
-#### 2. Append on `~/.bash_aliases`
+#### 2. Append on `~/.bashrc`
 
 ```bash
 # Initialize External Scripts
