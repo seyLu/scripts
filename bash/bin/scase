@@ -1,0 +1,54 @@
+#! /bin/bash
+
+shopt -s expand_aliases
+
+[[ "$_DEBUG" == "true" ]] && set -x
+
+#------------------------------------------------------------------------#
+# Updates case of string input
+# Input:
+#   "Hotfix: Address Timeout Error in File Upload Feature"
+# Option:
+#   kebab, -k
+# Output:
+#   "hotfix-address-timeout-error-in-file-upload-feature"
+#------------------------------------------------------------------------#
+
+function main() {
+    [[ $# -eq 0 ]] && usage && return;
+
+    local options=$( getopt -o k: --long kebab: -- "$@")
+
+    [[ $? -ne 0 ]] && {
+        echo "Incorrect options provided"
+        exit 1
+    }
+
+    eval set -- "${options}"
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -k | --kebab) kebab "${2}"; break ;;
+            --) shift; break ;;
+            *) usage; break ;;
+        esac
+    done
+}
+
+
+function kebab() {
+    echo "$1" \
+        | tr '[:upper:]' '[:lower:]' \
+        | sed 's/ /-/g' \
+        | sed 's/[^a-z0-9-]//g'
+}
+
+
+function usage() {
+    echo "usage: WIP"
+}
+
+
+main "$@"
+
+[[ "$_DEBUG" == "true" ]] && set +x

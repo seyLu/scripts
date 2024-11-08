@@ -38,6 +38,9 @@ function readme { execute "readmee" "$@"; }
 # Simplify doing Leetcode
 function leet { execute "leet" "$@"; }
 
+# Converts string case
+function scase { execute "scase" "$@"; }
+
 
 # _paths require skim to be loaded first
 source "${_SCRIPTS_PATH}/_paths"
