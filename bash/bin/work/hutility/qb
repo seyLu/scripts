@@ -32,11 +32,12 @@ function choices() {
         case "$1" in
             -c | --create)
                 git reset --hard;
-                if [[ -z "$(git branch --list "$2")" ]]; then
+                branch_name=$(scase -k "$2")
+                if [[ -z "$(git branch --list "${branch_name}")" ]]; then
                     git pull
-                    git branch -c "$2"
+                    git branch -c "${branch_name}"
                 fi
-                git checkout "$2"
+                git checkout "${branch_name}"
                 break
                 ;;
             -s | --switch)

@@ -40,7 +40,8 @@ function kebab() {
     echo "$1" \
         | tr '[:upper:]' '[:lower:]' \
         | sed 's/ /-/g' \
-        | sed 's/[^a-z0-9-]//g'
+        | sed -E 's/([a-z]+\/[0-9]+_)[^a-z0-9-]+//g' \
+        | sed -E 's/[^a-z0-9\/_-]//g'
 }
 
 
