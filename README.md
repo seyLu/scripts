@@ -18,7 +18,7 @@
 
 <br>
 
-### Setup using `setup.sh` (Recommeded)
+### Setup using `setup.sh` (Recommended)
 
 ```bash
 curl -s https://raw.githubusercontent.com/seyLu/scripts/main/setup.sh | bash
