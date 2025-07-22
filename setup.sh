@@ -29,10 +29,10 @@ if [[ ! -f ~/.bashrc ]]; then
     echo "#!/bin/bash" >> ~/.bashrc
 fi
 
-if ! grep -Fq '[[ -z "${_SCRIPTS_PATH}" ]]' ~/.bashrc; then
+if ! grep -Fq '! alias reload &>/dev/null' ~/.bashrc; then
     echo >> ~/.bashrc
     echo "# Initialize External Scripts" >> ~/.bashrc
-    echo '[[ -z "${_SCRIPTS_PATH}" ]]' "&& source \"${ENTRY_POINT}\"" >> ~/.bashrc
+    echo '! alias reload &>/dev/null' "&& source \"${ENTRY_POINT}\"" >> ~/.bashrc
     # shellcheck source="${ENTRY_POINT}"
     source "${ENTRY_POINT}"
     echo "Setup complete! Open a new terminal to start using your custom aliases and scripts."
