@@ -12,6 +12,16 @@ alias gm="f() {
 }; f"
 
 
+# Git branch with status colors
+function parse_git_branch() {
+    local branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+    if [ ! -z "$branch" ]; then
+        local git_status=$(git status --porcelain 2> /dev/null)
+        echo "($branch)"   # Clean branch
+    fi
+}
+
+
 # simplify git for solo development
 function g() {
     if [[ $# -eq 1 ]]; then
