@@ -38,7 +38,7 @@ git clone https://github.com/seyLu/scripts.git
 
 ```bash
 # Initialize External Scripts
-[[ -z "${_SCRIPTS_PATH}" ]] && source "${HOME}/<path_to_scripts>/scripts/bash/__init__"
+! alias reload &>/dev/null && source "${HOME}/<path_to_scripts>/scripts/bash/__init__"
 ```
 
 #### 3. Then run
