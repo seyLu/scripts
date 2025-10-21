@@ -2,7 +2,6 @@
 
 function resume() {
     local input_path="$( extract_value_assoc "${_PATHS}" "downloads" )/${_RESUME_FILE}"
-    local output_path="$( extract_value_assoc "${_PATHS}" "resume" )/${_RESUME_FILE}"
     local repo_path="$( extract_value_assoc "${_PATHS}" "repos" )/seyLu.github.io"
     local resume_path="${repo_path}/resume/${_RESUME_FILE}"
 
@@ -14,12 +13,12 @@ function resume() {
     fi
 
     if [[ -f "$input_path" ]]; then
-        gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${output_path}" "${input_path}"
-        cp "${output_path}" "${resume_path}"
-        rm "${input_path}"
+        gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${resume_path}" "${input_path}"
 
         cd "${repo_path}"
         g "${commit_msg}"
+
+        rm "${input_path}"
     else
         echo
         echo "${input_path}"
