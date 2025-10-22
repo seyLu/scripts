@@ -17,7 +17,7 @@ shopt -s expand_aliases
 function main() {
     [[ $# -eq 0 ]] && usage && return
 
-    local options=$(getopt -o k: --long kebab: -- "$@")
+    local -r options=$(getopt -o k: --long kebab: -- "$@")
 
     [[ $? -ne 0 ]] && {
         echo "Incorrect options provided"

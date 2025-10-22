@@ -1,6 +1,8 @@
 #! /bin/bash
 
-declare -rx _SCRIPTS_PATH="$(dirname -- "${BASH_SOURCE}")"
+# shellcheck disable=SC2128
+_SCRIPTS_PATH="$(dirname -- "${BASH_SOURCE}")"
+declare -rx _SCRIPTS_PATH
 
 source "${_SCRIPTS_PATH}/_config"
 source "${_SCRIPTS_PATH}/_colors"
@@ -12,7 +14,7 @@ source "${_SCRIPTS_PATH}/_aliases"
 
 # Execute External Script
 function execute() {
-    local script="${_SCRIPTS_PATH}/bin/${1}"
+    local -r script="${_SCRIPTS_PATH}/bin/${1}"
     shift
     "${script}" "$@"
 }

@@ -16,7 +16,10 @@ source "${_SCRIPTS_PATH}/__init__"
 # Generate Readme
 function main() {
     if [[ $# -eq 1 && "$1" == "init" ]]; then
-        [[ ! -d markdown ]] && mkdir markdown && cd markdown
+        if [[ ! -d markdown ]]; then
+            mkdir markdown
+            cd markdown || exit
+        fi
 
         init
     elif [[ -f main.md ]]; then
@@ -25,7 +28,7 @@ function main() {
         echo "dir: markdown/ found"
 
         if [[ -f markdown/main.md ]]; then
-            cd markdown
+            cd markdown || exit
             echo "file: markdown/main.md found"
 
             generate_readme
@@ -50,7 +53,7 @@ function generate_readme() {
         echo "error: compiling failed"
     fi
 
-    cd
+    cd || exit
 }
 
 # Initialize markdown dir

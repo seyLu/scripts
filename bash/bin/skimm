@@ -15,9 +15,9 @@ shopt -s expand_aliases
 function main() {
     [[ $# -eq 0 ]] && usage && return
 
-    local options=$(getopt -o f:aA --long file:,array,assoc -- "$@")
-    local file=""
-    local format=""
+    local -r options=$(getopt -o f:aA --long file:,array,assoc -- "$@")
+    local file
+    local format
 
     [[ $? -ne 0 ]] && {
         echo "Incorrect options provided"
@@ -67,7 +67,7 @@ function stringify() {
 }
 
 function stringify_assoc() {
-    readonly file="$1"
+    local -r file="$1"
 
     readarray -t lines <"${file}"
     local string
@@ -75,6 +75,7 @@ function stringify_assoc() {
     local value
     local substr
 
+    local line
     for line in "${lines[@]}"; do
         key="${line%%=*}"
         value="${line##*=}"
@@ -93,7 +94,7 @@ function stringify_assoc() {
         string="${substr}${string}"
     done
 
-    readonly string
+    local -r string
     echo "${string}"
 }
 
