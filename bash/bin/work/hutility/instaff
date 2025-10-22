@@ -33,13 +33,11 @@ readonly -a instaff_missing_docker_config=(
 )
 readonly instaff_app="instaff_app"
 
-
 function main() {
-    [[ $# -eq 0 ]] && help && return;
+    [[ $# -eq 0 ]] && help && return
 
     choices "$@"
 }
-
 
 function choices() {
     local options=$(
@@ -55,51 +53,72 @@ function choices() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -i | --init)
-                for key in "${instaff_missing_docker_config[@]}"; do
-                    to_docker_config "${key}"
-                done
+        -i | --init)
+            for key in "${instaff_missing_docker_config[@]}"; do
+                to_docker_config "${key}"
+            done
 
-                docker compose -f "${compose_path}" up -d "${instaff_containers[@]}"
-                docker exec -it "${instaff_app}" bash -c " \
+            docker compose -f "${compose_path}" up -d "${instaff_containers[@]}"
+            docker exec -it "${instaff_app}" bash -c " \
                     sed -i 's/\/usr\/libexec\///g' /etc/ssh/sshd_config; \
                     pip install ${instaff_missing_deps[*]} \
                 "
-                break ;;
-            -I | --down) docker compose -f "${compose_path}" down; break ;;
-            -x | --start) docker compose -f "${compose_path}" up -d "${instaff_containers[@]}"; break ;;
-            -X | --stop) docker compose -f "${compose_path}" stop "${instaff_containers[@]}"; break ;;
-            -e | --error_log) docker exec -it "${instaff_app}" bash -c "tail /var/log/instaff/error_log.log -n 40"; break ;;
-            -m | --migrate) docker exec -it "${instaff_app}" bash -c "cd www/hudbmigrator; python hudami.py --run"; break ;;
-            -a | --app) docker exec -it "${instaff_app}" bash -c "cd www; python instaff_${2}.py"; break ;;
-            -n | --ngrok)
-                ngrok http --host-header=rewrite localhost:8066 &
-                readonly ngrok_pid=$!
-                (
-                    sleep 5
-                    readonly ngrok_url="$(curl -s http://127.0.0.1:4040/api/tunnels | grep -o --color=never '"public_url":"[^"]*' | sed 's/"public_url":"//')"
+            break
+            ;;
+        -I | --down)
+            docker compose -f "${compose_path}" down
+            break
+            ;;
+        -x | --start)
+            docker compose -f "${compose_path}" up -d "${instaff_containers[@]}"
+            break
+            ;;
+        -X | --stop)
+            docker compose -f "${compose_path}" stop "${instaff_containers[@]}"
+            break
+            ;;
+        -e | --error_log)
+            docker exec -it "${instaff_app}" bash -c "tail /var/log/instaff/error_log.log -n 40"
+            break
+            ;;
+        -m | --migrate)
+            docker exec -it "${instaff_app}" bash -c "cd www/hudbmigrator; python hudami.py --run"
+            break
+            ;;
+        -a | --app)
+            docker exec -it "${instaff_app}" bash -c "cd www; python instaff_${2}.py"
+            break
+            ;;
+        -n | --ngrok)
+            ngrok http --host-header=rewrite localhost:8066 &
+            readonly ngrok_pid=$!
+            (
+                sleep 5
+                readonly ngrok_url="$(curl -s http://127.0.0.1:4040/api/tunnels | grep -o --color=never '"public_url":"[^"]*' | sed 's/"public_url":"//')"
 
-                    readonly postback_url_env="PDFPROCESSOR_JOB_POSTBACK_URL"
-                    readonly postback_url="${ngrok_url}/api/v3/pdfprocessor_postback"
+                readonly postback_url_env="PDFPROCESSOR_JOB_POSTBACK_URL"
+                readonly postback_url="${ngrok_url}/api/v3/pdfprocessor_postback"
 
-                    sed -i "s|^${postback_url_env} =.*|${postback_url_env} = ${postback_url}|" "${config_ini_path}"
-                    to_docker_config "${postback_url_env}"
-                )
-                wait "${ngrok_pid}"
-                break ;;
-            --) break ;;
-            *) help; break ;;
+                sed -i "s|^${postback_url_env} =.*|${postback_url_env} = ${postback_url}|" "${config_ini_path}"
+                to_docker_config "${postback_url_env}"
+            )
+            wait "${ngrok_pid}"
+            break
+            ;;
+        --) break ;;
+        *)
+            help
+            break
+            ;;
         esac
     done
 }
-
 
 function help() {
     echo
     echo "Instaff specific commands"
     echo
 }
-
 
 function get_env() {
     local key="$1"
@@ -112,14 +131,12 @@ function get_env() {
     fi
 }
 
-
 function to_docker_config() {
     local key="$1"
     local val="$(get_env "$1")"
 
     sed -i "s|^${key} =.*|${key} = ${val}|" "${config_ini_docker_path}"
 }
-
 
 main "$@"
 

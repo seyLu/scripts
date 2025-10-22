@@ -22,7 +22,7 @@ function main() {
     while [[ $# -gt 0 ]]; do
         echo
 
-        temp=( [key]=value [key1]=value1 )
+        temp=([key]=value [key1]=value1)
         # temp=( value value1 )
         # temp="value"
 
@@ -35,7 +35,6 @@ function main() {
         #     declare -A array="${temp}"
         # fi
 
-
         # echo " ${1}" | red-grep "[[:graph:]]"
         # for key in "${!array[@]}"; do
         #     echo " -> [${key}]=\"${array[$key]}\"" \
@@ -46,7 +45,6 @@ function main() {
         echo
     done
 }
-
 
 # Returns type of Argument ( int | string | array | associative array )
 function typeof() {
@@ -64,7 +62,6 @@ function typeof() {
     # fi
     return
 }
-
 
 main "$@"
 

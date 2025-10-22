@@ -4,6 +4,6 @@ readonly data_global_path="${_SCRIPTS_PATH}/data/global"
 
 [[ -z "${_PATHS}" ]] && {
     # Read from Global Data text file and Populate _PATHS
-    readonly _PATHS=$( skim -Af "${data_global_path}/paths.txt" )
+    readonly _PATHS=$(skim -Af "${data_global_path}/paths.txt")
     export _PATHS
 }

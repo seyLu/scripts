@@ -11,14 +11,13 @@
 #------------------------------------------------------------------------#
 
 function main() {
-    [[ $# -eq 0 ]] && usage && return;
+    [[ $# -eq 0 ]] && usage && return
 
     while [[ $# -gt 0 ]]; do
         leet "$1"
         shift
     done
 }
-
 
 function leet() {
     local problem_name="$1"
@@ -31,9 +30,8 @@ function leet() {
     cd ..
 }
 
-
 function placeholder() {
-read -rd "" placeholder_content <<-EOF
+    read -rd "" placeholder_content <<-EOF
 def main():
     print(${problem_name}())
     print(${problem_name}())
@@ -47,25 +45,22 @@ if __name__ == "__main__":
     main()
 EOF
 
-read -rd "" empty_python_docstring <<-"EOF"
+    read -rd "" empty_python_docstring <<-"EOF"
 """
 
 """
 EOF
 
-    echo "${placeholder_content}" > "${problem_name}.py"
-    echo -e "${empty_python_docstring}\n" > "${problem_name}_soln.py"
-    echo "${placeholder_content}" >> "${problem_name}_soln.py"
+    echo "${placeholder_content}" >"${problem_name}.py"
+    echo -e "${empty_python_docstring}\n" >"${problem_name}_soln.py"
+    echo "${placeholder_content}" >>"${problem_name}_soln.py"
 }
-
 
 function usage() {
     echo
     echo "Usage: At least one argument required"
 }
 
-
 main "$@"
-
 
 [[ "$_DEBUG" == "true" ]] && set +x

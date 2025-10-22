@@ -13,10 +13,11 @@ shopt -s expand_aliases
 #------------------------------------------------------------------------#
 
 function main() {
-    [[ $# -eq 0 ]] && usage && return;
+    [[ $# -eq 0 ]] && usage && return
 
-    local options=$( getopt -o f:aA --long file:,array,assoc -- "$@")
-    local file=""; local format=""
+    local options=$(getopt -o f:aA --long file:,array,assoc -- "$@")
+    local file=""
+    local format=""
 
     [[ $? -ne 0 ]] && {
         echo "Incorrect options provided"
@@ -27,11 +28,26 @@ function main() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -f | --file) file="$2"; shift 2 ;;
-            -a | --array) format="array"; shift 1 ;;
-            -A | --assoc) format="assoc"; shift 1 ;;
-            --) shift; break ;;
-            *) usage; break ;;
+        -f | --file)
+            file="$2"
+            shift 2
+            ;;
+        -a | --array)
+            format="array"
+            shift 1
+            ;;
+        -A | --assoc)
+            format="assoc"
+            shift 1
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            usage
+            break
+            ;;
         esac
     done
 
@@ -42,29 +58,30 @@ function main() {
     fi
 }
 
-
 function stringify() {
     case "$1" in
-        array) stringify_array "${file}" ;;
-        assoc) stringify_assoc "${file}" ;;
-        *) return ;;
+    array) stringify_array "${file}" ;;
+    assoc) stringify_assoc "${file}" ;;
+    *) return ;;
     esac
 }
-
 
 function stringify_assoc() {
     readonly file="$1"
 
-    readarray -t lines < "${file}"
-    local string; local key; local value; local substr
+    readarray -t lines <"${file}"
+    local string
+    local key
+    local value
+    local substr
 
     for line in "${lines[@]}"; do
         key="${line%%=*}"
         value="${line##*=}"
 
         case "${value::1}" in
-            / | .) ;;
-            *) value="${HOME}/${value}" ;;
+        / | .) ;;
+        *) value="${HOME}/${value}" ;;
         esac
 
         if [[ -z "${string}" ]]; then
@@ -80,11 +97,9 @@ function stringify_assoc() {
     echo "${string}"
 }
 
-
 function usage() {
     echo "usage: WIP"
 }
-
 
 main "$@"
 

@@ -11,13 +11,12 @@ function format_spaces() {
     awk '{printf "%s%s",$0,spaces} END{print ""}' spaces="${spaces}"
 }
 
-
 # Extract value using key from stringified associative array
 function extract_value_assoc() {
     [[ $# -eq 2 ]] && key="$2"
 
-    echo "$1" \
-        | awk -v key="${key}" 'match($0, key"[^:]+") {
+    echo "$1" |
+        awk -v key="${key}" 'match($0, key"[^:]+") {
                 print substr(\
                     $0, RSTART + length(key) + 3, \
                     RLENGTH - length(key) - 4 \
@@ -25,24 +24,22 @@ function extract_value_assoc() {
             }'
 }
 
-
 # Toggle _DEBUG
 function debug() {
     if [[ $# -eq 1 ]]; then
         case $1 in
-            1 | on | y | yes | t | true| en | enable) _DEBUG="true" ;;
-            0 | off | n | no | f | false | dis | disable) _DEBUG="false" ;;
-            *) debug yes ;;
+        1 | on | y | yes | t | true | en | enable) _DEBUG="true" ;;
+        0 | off | n | no | f | false | dis | disable) _DEBUG="false" ;;
+        *) debug yes ;;
         esac
     else
         echo "Exactly one argument required"
     fi
 }
 
-
 # Initializes every other script aside from _init_
 function build() {
     # Sets Executable Permission to External Scripts
-    find  "${_SCRIPTS_PATH}/bin" -maxdepth 3 -name "*"  \
+    find "${_SCRIPTS_PATH}/bin" -maxdepth 3 -name "*" \
         -not -perm -u=x -exec chmod u+x {} \;
 }

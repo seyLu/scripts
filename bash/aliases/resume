@@ -1,8 +1,8 @@
 #! /bin/bash
 
 function resume() {
-    local input_path="$( extract_value_assoc "${_PATHS}" "downloads" )/${_RESUME_FILE}"
-    local repo_path="$( extract_value_assoc "${_PATHS}" "repos" )/seyLu.github.io"
+    local input_path="$(extract_value_assoc "${_PATHS}" "downloads")/${_RESUME_FILE}"
+    local repo_path="$(extract_value_assoc "${_PATHS}" "repos")/seyLu.github.io"
     local resume_path="${repo_path}/resume/${_RESUME_FILE}"
 
     local commit_msg="feat (resume): "

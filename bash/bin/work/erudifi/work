@@ -8,13 +8,13 @@ source "${_SCRIPTS_PATH}/__init__"
 # Collection of Bukas.ph scripts
 #------------------------------------------------------------------------#
 
-readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )/Erudifi"
+readonly work_path="$(extract_value_assoc "${_PATHS}" "work")/Erudifi"
 readonly -a valid_repos=(
     "mono-backend"
     "borrower-app"
 )
 declare -l repo=$(
-    dir=$( basename "${PWD}" )
+    dir=$(basename "${PWD}")
 
     if [[ "${valid_repos[@]}" =~ "${dir}" ]]; then
         echo "${dir}"
@@ -23,13 +23,11 @@ declare -l repo=$(
     fi
 )
 
-
 function main() {
-    [[ $# -eq 0 ]] && list_config && return;
+    [[ $# -eq 0 ]] && list_config && return
 
     choices "$@"
 }
-
 
 function choices() {
     local options=$(
@@ -45,64 +43,99 @@ function choices() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -c | --change_dir) change_dir "${2,,}"; break ;;
-            -x | --start) docker_start "${2,,}"; break ;;
-            -b | --bash) docker_bash "${2,,}"; break ;;
-            -t | --test) docker_test "${2,,}"; break ;;
-            -X | --stop) docker_stop; break ;;
-            -I | --install) docker_install; break ;;
-            --) shift; break ;;
-            *) list_config; break ;;
+        -c | --change_dir)
+            change_dir "${2,,}"
+            break
+            ;;
+        -x | --start)
+            docker_start "${2,,}"
+            break
+            ;;
+        -b | --bash)
+            docker_bash "${2,,}"
+            break
+            ;;
+        -t | --test)
+            docker_test "${2,,}"
+            break
+            ;;
+        -X | --stop)
+            docker_stop
+            break
+            ;;
+        -I | --install)
+            docker_install
+            break
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            list_config
+            break
+            ;;
         esac
     done
 }
-
 
 function change_dir() {
     local repo_path="${work_path}/"
 
     case "$1" in
-        be | mono-backend) repo_path+="mono-backend" ;;
-        fe | borrower-app) repo_path+="borrower-app" ;;
-        *) list_valid_repos; return ;;
+    be | mono-backend) repo_path+="mono-backend" ;;
+    fe | borrower-app) repo_path+="borrower-app" ;;
+    *)
+        list_valid_repos
+        return
+        ;;
     esac
 
     gnome-terminal --working-directory="${repo_path}" --no-environment --tab
 }
 
-
 function docker_start() {
-    local app=$( get_app "$1" )
-    [[ -z "${app}" ]] && { list_config; return; }
+    local app=$(get_app "$1")
+    [[ -z "${app}" ]] && {
+        list_config
+        return
+    }
 
     case "${repo}" in
-        mono-backend)
-            docker-compose -f "docker-compose.${app}.yml" up -d ;;
-        borrower-app)
-            . ~/.nvm/nvm.sh
-            nvm use lts/gallium
-            npm run dev:web
-            ;;
-        *) list_valid_repos; return ;;
+    mono-backend)
+        docker-compose -f "docker-compose.${app}.yml" up -d
+        ;;
+    borrower-app)
+        . ~/.nvm/nvm.sh
+        nvm use lts/gallium
+        npm run dev:web
+        ;;
+    *)
+        list_valid_repos
+        return
+        ;;
     esac
 }
 
-
 function docker_bash() {
-    local backend=$( get_backend "$1" )
-    [[ -z "${backend}" ]] && { list_config; return; }
+    local backend=$(get_backend "$1")
+    [[ -z "${backend}" ]] && {
+        list_config
+        return
+    }
 
     docker-compose exec "${backend}" bash
 }
 
-
 function docker_test() {
-    local backend=$( get_backend "$1" )
-    [[ -z "${backend}" ]] && { list_config; return; }
+    local backend=$(get_backend "$1")
+    [[ -z "${backend}" ]] && {
+        list_config
+        return
+    }
 
     docker-compose exec -T "${backend}" ./manage.py makemigrations --check
 }
-
 
 function docker_stop() { docker-compose down; }
 
@@ -115,30 +148,27 @@ function docker_install() {
     fi
 }
 
-
 function get_app() {
     local -l app
 
     case "$1" in
-        ph) app="bukas" ;;
-        id) app="danacita" ;;
+    ph) app="bukas" ;;
+    id) app="danacita" ;;
     esac
 
     echo "${app}"
 }
 
-
 function get_backend() {
     local -l backend
 
     case "$1" in
-        ph) backend="backend" ;;
-        id) backend="backend_danacita" ;;
+    ph) backend="backend" ;;
+    id) backend="backend_danacita" ;;
     esac
 
     echo "${backend}"
 }
-
 
 function list_valid_repos() {
     echo
@@ -147,9 +177,8 @@ function list_valid_repos() {
     done
 }
 
-
 function list_config() {
-read -rd "" details <<-EOF
+    read -rd "" details <<-EOF
 \t
         ${RED}Company${END_COLOR}: Erudifi
         ---------------------
@@ -158,7 +187,6 @@ EOF
 
     echo -e "${details}"
 }
-
 
 main "$@"
 

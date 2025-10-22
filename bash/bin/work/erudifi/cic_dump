@@ -13,21 +13,21 @@ readonly YEAR=$(date +%Y)
 readonly MONTH=$(date +%m)
 readonly DAY=$(date +%d)
 
-
 function main() {
-    [[ $# -eq 0 ]] && { dump_six_months; return; }
+    [[ $# -eq 0 ]] && {
+        dump_six_months
+        return
+    }
 
     dump_data_nth_month_ago "$1"
 }
 
-
 function dump_six_months() {
     # Loop over the past 6 months
-    for (( i=6; i >= 0; i-- )); do
+    for ((i = 6; i >= 0; i--)); do
         dump_data_nth_month_ago "${i}"
     done
 }
-
 
 function dump_data_nth_month_ago() {
     i="$1"
@@ -39,7 +39,7 @@ function dump_data_nth_month_ago() {
     DAYS=$(cal $M $Y | awk 'NF {DAYS = $NF}; END {print DAYS}')
 
     # Loop over the days for this month
-    for (( j=1; j <= "${DAYS}"; j++ )); do
+    for ((j = 1; j <= "${DAYS}"; j++)); do
         # Construct the date for this day
         DATE=$(date -d "${Y}-${M}-${j}" +%Y%m%d)
 
@@ -55,7 +55,6 @@ function dump_data_nth_month_ago() {
         fi
     done
 }
-
 
 main "$@"
 

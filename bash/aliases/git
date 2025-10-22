@@ -11,16 +11,14 @@ alias gm="f() {
     fi
 }; f"
 
-
 # Git branch with status colors
 function parse_git_branch() {
-    local branch=$(git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+    local branch=$(git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
     if [ ! -z "$branch" ]; then
-        local git_status=$(git status --porcelain 2> /dev/null)
-        echo "($branch)"   # Clean branch
+        local git_status=$(git status --porcelain 2>/dev/null)
+        echo "($branch)" # Clean branch
     fi
 }
-
 
 # simplify git for solo development
 function g() {
@@ -46,7 +44,6 @@ function g() {
     fi
 }
 
-
 # simplify git add
 function ga() {
     if [[ $# -gt 0 ]]; then
@@ -55,7 +52,6 @@ function ga() {
         git add .
     fi
 }
-
 
 # simplify git commit
 alias gc="git commit -m"
@@ -72,7 +68,7 @@ function gb() {
     reload
 
     if [[ $# -gt 0 ]]; then
-        local options=$( getopt -o lc:s:f:d:m: --long list,create:,switch:,find:,delete:,move: -- "$@")
+        local options=$(getopt -o lc:s:f:d:m: --long list,create:,switch:,find:,delete:,move: -- "$@")
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
@@ -83,58 +79,64 @@ function gb() {
 
         while [[ $# -gt 0 ]]; do
             case "$1" in
-                -l | --list)
-                    git branch
-                    break
-                    ;;
-                -c | --create)
-                    git reset --hard
-                    if [[ -z "$(git branch --list "$2")" ]]; then
-                        git pull
-
-                        if echo "$PWD" | grep -qE "55"; then
-                            git checkout staging  # hutility
-                        else
-                            git checkout main
-                        fi
-
-                        git checkout -b "$2"
-                    else
-                        git checkout "$2"
-                    fi
-                    break
-                    ;;
-                -s | --switch)
-                    git reset --hard
-                    git checkout "$2"
-                    break
-                    ;;
-                -f | --find)
-                    git branch | grep --ignore-case "$2"
-                    break
-                    ;;
-                -d | --delete)
-                    git reset --hard
+            -l | --list)
+                git branch
+                break
+                ;;
+            -c | --create)
+                git reset --hard
+                if [[ -z "$(git branch --list "$2")" ]]; then
+                    git pull
 
                     if echo "$PWD" | grep -qE "55"; then
-                        git checkout staging  # hutility
+                        git checkout staging # hutility
                     else
                         git checkout main
                     fi
 
-                    git branch -d "$2"
-                    break
-                    ;;
-                -m | --move)
-                    if [[ $# -lt 4 ]]; then
-                        git branch -m "$(branch)" "$2"
-                    else
-                        git branch -m "$2" "$4"
-                    fi
-                    break
-                    ;;
-                --) shift; break ;;
-                *) branch; break ;;
+                    git checkout -b "$2"
+                else
+                    git checkout "$2"
+                fi
+                break
+                ;;
+            -s | --switch)
+                git reset --hard
+                git checkout "$2"
+                break
+                ;;
+            -f | --find)
+                git branch | grep --ignore-case "$2"
+                break
+                ;;
+            -d | --delete)
+                git reset --hard
+
+                if echo "$PWD" | grep -qE "55"; then
+                    git checkout staging # hutility
+                else
+                    git checkout main
+                fi
+
+                git branch -d "$2"
+                break
+                ;;
+            -m | --move)
+                if [[ $# -lt 4 ]]; then
+                    git branch -m "$(branch)" "$2"
+                else
+                    git branch -m "$2" "$4"
+                fi
+                break
+                ;;
+            --)
+                shift
+                break
+                ;;
+            *)
+                branch
+                break
+                ;;
             esac
         done
     else

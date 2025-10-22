@@ -8,12 +8,12 @@ source "${_SCRIPTS_PATH}/__init__"
 # Collection of Hutility scripts
 #------------------------------------------------------------------------#
 
-readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )/Hutility"
+readonly work_path="$(extract_value_assoc "${_PATHS}" "work")/Hutility"
 readonly -a valid_repos=(
     "55"
 )
 declare -l repo=$(
-    dir=$( basename "${PWD}" )
+    dir=$(basename "${PWD}")
 
     if [[ "${valid_repos[@]}" =~ "${dir}" ]]; then
         echo "${dir}"
@@ -22,13 +22,11 @@ declare -l repo=$(
     fi
 )
 
-
 function main() {
-    [[ $# -eq 0 ]] && list_config && return;
+    [[ $# -eq 0 ]] && list_config && return
 
     choices "$@"
 }
-
 
 function choices() {
     local options=$(
@@ -44,27 +42,43 @@ function choices() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -c | --change_dir) change_dir "${2,,}"; break ;;
-            -v | --vpn) sudo openvpn --config "${work_path}/Hutility VPN Profile.ovpn" --auth-user-pass "${work_path}/vpn_creds.txt"; break ;;
-            -p | --instaff-chrome-profiles) open_instaff_chrome_profiles; break ;;
-            --) shift; break ;;
-            *) list_config; break ;;
+        -c | --change_dir)
+            change_dir "${2,,}"
+            break
+            ;;
+        -v | --vpn)
+            sudo openvpn --config "${work_path}/Hutility VPN Profile.ovpn" --auth-user-pass "${work_path}/vpn_creds.txt"
+            break
+            ;;
+        -p | --instaff-chrome-profiles)
+            open_instaff_chrome_profiles
+            break
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            list_config
+            break
+            ;;
         esac
     done
 }
-
 
 function change_dir() {
     local repo_path="${work_path}/"
 
     case "$1" in
-        55 | instaff) repo_path+="55" ;;
-        *) list_valid_repos; return ;;
+    55 | instaff) repo_path+="55" ;;
+    *)
+        list_valid_repos
+        return
+        ;;
     esac
 
     gnome-terminal --working-directory="${repo_path}" --no-environment --tab
 }
-
 
 function list_valid_repos() {
     echo
@@ -72,7 +86,6 @@ function list_valid_repos() {
         echo -e "  --> ${CYAN}${valid_repo}${END_COLOR}"
     done
 }
-
 
 function open_instaff_chrome_profiles() {
     local -r CHROME_EXE="/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
@@ -83,9 +96,8 @@ function open_instaff_chrome_profiles() {
     done
 }
 
-
 function list_config() {
-read -rd "" details <<-EOF
+    read -rd "" details <<-EOF
 \t
         ${RED}Company${END_COLOR}: Hutility
         ---------------------
@@ -94,7 +106,6 @@ EOF
 
     echo -e "${details}"
 }
-
 
 main "$@"
 

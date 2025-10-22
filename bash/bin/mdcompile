@@ -17,7 +17,7 @@ function main() {
     local dir="sections"
 
     [[ $# -gt 0 ]] && {
-        local options=$( getopt -o i:o:d: --long input:,output:,directory: -- "$@")
+        local options=$(getopt -o i:o:d: --long input:,output:,directory: -- "$@")
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
@@ -28,11 +28,26 @@ function main() {
 
         while [[ $# -gt 0 ]]; do
             case "$1" in
-                -i | --input) input="input/${2}.md"; shift 2 ;;
-                -o | --output) output="output/${2}.md"; shift 2 ;;
-                -d | --directory) dir="${2}"; shift 2 ;;
-                --) shift; break ;;
-                *) usage; break ;;
+            -i | --input)
+                input="input/${2}.md"
+                shift 2
+                ;;
+            -o | --output)
+                output="output/${2}.md"
+                shift 2
+                ;;
+            -d | --directory)
+                dir="${2}"
+                shift 2
+                ;;
+            --)
+                shift
+                break
+                ;;
+            *)
+                usage
+                break
+                ;;
             esac
         done
     }
@@ -44,7 +59,6 @@ function main() {
         usage
     fi
 }
-
 
 function process() {
     readonly input="$1"
@@ -65,9 +79,8 @@ function process() {
 
             compile "${file}" "${output}"
         fi
-    done < "${input}"
+    done <"${input}"
 }
-
 
 function compile() {
     local _file="$1"
@@ -75,20 +88,18 @@ function compile() {
 
     if [[ -f "${_file}" ]]; then
         while IFS= read file_line; do
-            echo "${file_line}" >> "${_output}"
-        done < "${_file}"
+            echo "${file_line}" >>"${_output}"
+        done <"${_file}"
 
-        echo >> "$_output"
+        echo >>"$_output"
     else
         echo "Error: "${_file}" not found"
     fi
 }
 
-
 function usage() {
     echo "usage: WIP"
 }
-
 
 main "$@"
 

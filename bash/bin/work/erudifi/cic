@@ -8,12 +8,14 @@ source "${_SCRIPTS_PATH}/__init__"
 # CIC specific alias
 #------------------------------------------------------------------------#
 
-readonly work_path="$( extract_value_assoc "${_PATHS}" "work" )"
+readonly work_path="$(extract_value_assoc "${_PATHS}" "work")"
 readonly cic_path="${work_path}/Erudifi/CIC/cic-loantape"
 
-
 function main() {
-    [[ $# -eq 0 ]] && { change_dir; return; }
+    [[ $# -eq 0 ]] && {
+        change_dir
+        return
+    }
 
     local options=$(
         getopt -o xdXs: --long start,dump,stop,snapshot: -- "$@"
@@ -28,27 +30,45 @@ function main() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -x | --start) docker_start; break ;;
-            -d | --dump) docker_dump; break ;;
-            -s | --snapshot) docker_dump "$2"; break ;;
-            -X | --stop) docker_stop; break ;;
-            --) shift; break ;;
-            *) usage; break ;;
+        -x | --start)
+            docker_start
+            break
+            ;;
+        -d | --dump)
+            docker_dump
+            break
+            ;;
+        -s | --snapshot)
+            docker_dump "$2"
+            break
+            ;;
+        -X | --stop)
+            docker_stop
+            break
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            usage
+            break
+            ;;
         esac
     done
 }
-
 
 function change_dir() {
     gnome-terminal --working-directory="${cic_path}" --no-environment --tab
     gnome-terminal --working-directory="${cic_path}" --no-environment --tab
 }
 
-
 function docker_start() { docker-compose up; }
 function docker_stop() { docker-compose down; }
-function usage() { echo; echo "CIC specific alias"; }
-
+function usage() {
+    echo
+    echo "CIC specific alias"
+}
 
 function docker_dump() {
     if [[ $# -eq 0 ]]; then
@@ -59,7 +79,6 @@ function docker_dump() {
         docker-compose exec web flask makedump --snapshot "$1"
     fi
 }
-
 
 main "$@"
 

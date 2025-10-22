@@ -8,13 +8,11 @@ source "${_SCRIPTS_PATH}/__init__"
 # Hutility specific git alias
 #------------------------------------------------------------------------#
 
-
 function main() {
-    [[ $# -eq 0 ]] && help && return;
+    [[ $# -eq 0 ]] && help && return
 
     choices "$@"
 }
-
 
 function choices() {
     local options=$(
@@ -30,31 +28,48 @@ function choices() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -l | --log) git log --oneline; break ;;
-            -p | --push) git push; break ;;
-            -f | --safe_force_push) git push --force-with-lease --force-if-includes; break ;;
-            -i | --interactive_rebase) git rebase -i HEAD~"$2"; break ;;
-            -c | --continue_rebase) git rebase --continue; break;;
-            --) if [[ $# -eq 2  ]] && [[ -n "$2" ]]; then
-                    git add .
-                    git commit -m "$2"
-                else
-                    shift
-                fi
-                break
-                ;;
-            *) help; break ;;
+        -l | --log)
+            git log --oneline
+            break
+            ;;
+        -p | --push)
+            git push
+            break
+            ;;
+        -f | --safe_force_push)
+            git push --force-with-lease --force-if-includes
+            break
+            ;;
+        -i | --interactive_rebase)
+            git rebase -i HEAD~"$2"
+            break
+            ;;
+        -c | --continue_rebase)
+            git rebase --continue
+            break
+            ;;
+        --)
+            if [[ $# -eq 2 ]] && [[ -n "$2" ]]; then
+                git add .
+                git commit -m "$2"
+            else
+                shift
+            fi
+            break
+            ;;
+        *)
+            help
+            break
+            ;;
         esac
     done
 }
-
 
 function help() {
     echo
     echo "Hutility specific git alias"
     echo
 }
-
 
 main "$@"
 

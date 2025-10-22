@@ -15,9 +15,9 @@ shopt -s expand_aliases
 #------------------------------------------------------------------------#
 
 function main() {
-    [[ $# -eq 0 ]] && usage && return;
+    [[ $# -eq 0 ]] && usage && return
 
-    local options=$( getopt -o k: --long kebab: -- "$@")
+    local options=$(getopt -o k: --long kebab: -- "$@")
 
     [[ $? -ne 0 ]] && {
         echo "Incorrect options provided"
@@ -28,27 +28,33 @@ function main() {
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            -k | --kebab) kebab "${2}"; break ;;
-            --) shift; break ;;
-            *) usage; break ;;
+        -k | --kebab)
+            kebab "${2}"
+            break
+            ;;
+        --)
+            shift
+            break
+            ;;
+        *)
+            usage
+            break
+            ;;
         esac
     done
 }
 
-
 function kebab() {
-    echo "$1" \
-        | tr '[:upper:]' '[:lower:]' \
-        | sed 's/ /-/g' \
-        | sed -E 's/([a-z]+\/[0-9]+_)[^a-z0-9-]+//g' \
-        | sed -E 's/[^a-z0-9\/_-]//g'
+    echo "$1" |
+        tr '[:upper:]' '[:lower:]' |
+        sed 's/ /-/g' |
+        sed -E 's/([a-z]+\/[0-9]+_)[^a-z0-9-]+//g' |
+        sed -E 's/[^a-z0-9\/_-]//g'
 }
-
 
 function usage() {
     echo "usage: WIP"
 }
-
 
 main "$@"
 

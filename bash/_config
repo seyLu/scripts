@@ -4,19 +4,19 @@
 # Configurations
 #------------------------------------------------------------------------#
 
-[[ -z "${_DEBUG}" ]] && \
+[[ -z "${_DEBUG}" ]] &&
     _DEBUG="false"
 
-[[ -z "${_PYTHON}" ]] && \
+[[ -z "${_PYTHON}" ]] &&
     _PYTHON="python3.11"
 
-[[ -z "${_EDITOR}" ]] && \
+[[ -z "${_EDITOR}" ]] &&
     _EDITOR="subl"
 
-[[ -z "${_RESUME_FILE}" ]] && \
+[[ -z "${_RESUME_FILE}" ]] &&
     _RESUME_FILE="mj_sabit_resume.pdf"
 
-[[ -z "${_WORK}" ]] && \
+[[ -z "${_WORK}" ]] &&
     _WORK="hutility"
 
 export _DEBUG

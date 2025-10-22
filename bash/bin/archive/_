@@ -8,7 +8,7 @@
 
 # Silent execution, no output message
 silent() {
-    "$@" > /dev/null
+    "$@" >/dev/null
 }
 
 # Repeat string n times
@@ -19,7 +19,8 @@ repeat() {
 
     for i in $(seq $min $max); do
         echo -n $string
-    done; echo
+    done
+    echo
 }
 
 # Success Message
@@ -46,15 +47,18 @@ list() {
 
     case $1 in
     dir)
-        pwdls ;;
+        pwdls
+        ;;
     www)
         cd /var/www
         pwdls
-        cd ;;
+        cd
+        ;;
     conf)
         cd /etc/apache2/sites-enabled
         pwdls
-        cd ;;
+        cd
+        ;;
     host)
         echo /etc/hosts
         cat /etc/hosts | grep ".test" | sed "s/^.*[[:blank:]]//g" | grep [[:graph:]]
@@ -62,6 +66,7 @@ list() {
     *)
         pwd
         ls $1
+        ;;
     esac
 
     echo
@@ -83,15 +88,20 @@ modify() {
 
     case $1 in
     bash)
-        path=~/.bashrc ;;
+        path=~/.bashrc
+        ;;
     alias)
-        path=~/.bash_aliases ;;
+        path=~/.bash_aliases
+        ;;
     conf)
-        path=/etc/apache2/sites-available/$2.conf ;;
+        path=/etc/apache2/sites-available/$2.conf
+        ;;
     host)
-        path=/etc/hosts ;;
+        path=/etc/hosts
+        ;;
     *)
         path=$1
+        ;;
     esac
 
     $editor $path
@@ -108,7 +118,8 @@ cv() {
         silent sudo a2enmod $lang$version
         silent sudo service apache2 restart
 
-        msg "Apache PHP version successfully switched to PHP $version" ;;
+        msg "Apache PHP version successfully switched to PHP $version"
+        ;;
     esac
 }
 
@@ -118,12 +129,15 @@ www() {
 
     case $1 in
     undo)
-        www remove $www_cache_dir ;;
+        www remove $www_cache_dir
+        ;;
     list)
-        list dir ;;
+        list dir
+        ;;
     remove)
         sudo rmdir $2
-        list dir ;;
+        list dir
+        ;;
     *)
         sudo mkdir $1
         sudo chown $USER:www-data $1
@@ -134,6 +148,7 @@ www() {
 
         msg "Successfully created dir $1 in /var/www with appropriate permissions"
         www_cache_dir=$1
+        ;;
     esac
 
     cd
@@ -148,51 +163,61 @@ conf() {
         if [ $# -eq 2 ]; then
             case $2 in
             host)
-                conf rmhost $conf_cache_file ;;
+                conf rmhost $conf_cache_file
+                ;;
             all)
-                conf rmhost $conf_cache_file ;&
+                conf rmhost $conf_cache_file
+                ;&
             enable)
                 conf disable $conf_cache_file
+                ;;
             esac
         fi
 
-        conf remove $conf_cache_file ;;
+        conf remove $conf_cache_file
+        ;;
     list)
         if [ $# -eq 2 ]; then
             case $2 in
             all)
                 list dir
                 list conf
-                list host ;;
+                list host
+                ;;
             *)
                 list $2
+                ;;
             esac
         else
             list dir
-        fi ;;
+        fi
+        ;;
     remove)
         sudo rm -f $2.conf
-        list dir ;;
+        list dir
+        ;;
     enable)
         silent sudo a2ensite $2.conf
         silent sudo service apache2 reload
         list conf
 
         msg "Apache conf $2 successfully enabled"
-        conf_cache_file=$2 ;;
+        conf_cache_file=$2
+        ;;
     disable)
         silent sudo a2dissite $2.conf
         silent sudo service apache2 reload
-        list conf ;;
+        list conf
+        ;;
     host)
         if [ $# -lt 2 ]; then
             cd | return
         else
-            previous_mod_time=`stat -c %Y /etc/hosts`
+            previous_mod_time=$(stat -c %Y /etc/hosts)
             append /etc/hosts "127.0.0.1\t$2.test"
 
             while true; do
-                current_mod_time=`stat -c %Y /etc/hosts`
+                current_mod_time=$(stat -c %Y /etc/hosts)
                 if [ "$previous_mod_time" != "$current_mod_time" ]; then
                     break
                 fi
@@ -203,16 +228,17 @@ conf() {
 
             msg "Local domain successfully registered in localhost"
             conf_cache_file=$2
-        fi ;;
+        fi
+        ;;
     rmhost)
         if [ $# -lt 2 ]; then
             cd | return
         else
-            previous_mod_time=`stat -c %Y /etc/hosts`
+            previous_mod_time=$(stat -c %Y /etc/hosts)
             sudo sed -i.bak "/$2.test/d" /etc/hosts
 
             while true; do
-                current_mod_time=`stat -c %Y /etc/hosts`
+                current_mod_time=$(stat -c %Y /etc/hosts)
                 if [ "$previous_mod_time" != "$current_mod_time" ]; then
                     break
                 fi
@@ -220,7 +246,8 @@ conf() {
             done
 
             list host
-        fi ;;
+        fi
+        ;;
     *)
         file=$1.conf
 
@@ -249,6 +276,7 @@ conf() {
 
         msg "Successfully created conf $1 in /etc/apach2/sites-available"
         conf_cache_file=$1
+        ;;
     esac
 
     cd
@@ -259,20 +287,24 @@ a2vhost() {
     case $1 in
     undo)
         conf undo all
-        www undo ;;
+        www undo
+        ;;
     remove)
         conf rmhost $2
         conf disable $2
         conf remove $2
-        www remove $2 ;;
+        www remove $2
+        ;;
     list)
         www list
-        conf list all ;;
+        conf list all
+        ;;
     *)
         www $1
         conf $1
         conf enable $1
         conf host $1
+        ;;
     esac
 }
 
@@ -285,26 +317,31 @@ pvm() {
             echo
             case $2 in
             current)
-                apache_using_php=$( ls /etc/apache2/mods-enabled | grep "php" | sed "s/php/$pvm_bullet/g" | sed "s/[[:alpha:]]//g" | uniq | sed "s/\.$//g" )
+                apache_using_php=$(ls /etc/apache2/mods-enabled | grep "php" | sed "s/php/$pvm_bullet/g" | sed "s/[[:alpha:]]//g" | uniq | sed "s/\.$//g")
                 echo " # Current Apache PHP version"
-                echo -e "$apache_using_php" | cyan-grep [[:graph:]] ;;
+                echo -e "$apache_using_php" | cyan-grep [[:graph:]]
+                ;;
             installed)
-                installed_php_list=$( sudo update-alternatives --list php | sed "s/\/usr\/bin\/php/$pvm_bullet/g" | grep "[[:digit:]].[[:digit:]]" | sort -ru )
+                installed_php_list=$(sudo update-alternatives --list php | sed "s/\/usr\/bin\/php/$pvm_bullet/g" | grep "[[:digit:]].[[:digit:]]" | sort -ru)
                 echo " # Installed PHP versions"
-                echo -e "$installed_php_list" | green-grep [[:graph:]] ;;
+                echo -e "$installed_php_list" | green-grep [[:graph:]]
+                ;;
             available)
-                available_php_list=$( apt-cache showpkg php | cut -d \  -f 1 | sort -ru | grep "php" | sed "s/^php/$pvm_bullet/g")
+                available_php_list=$(apt-cache showpkg php | cut -d \  -f 1 | sort -ru | grep "php" | sed "s/^php/$pvm_bullet/g")
                 echo " # Available PHP versions"
-                echo -e "$available_php_list" | grep [[:graph:]] ;;
+                echo -e "$available_php_list" | grep [[:graph:]]
+                ;;
             esac
             echo
         else
             pvm list current
             pvm list installed
             pvm list available
-        fi ;;
+        fi
+        ;;
     use)
-        cv php $2 ;;
+        cv php $2
+        ;;
     esac
 }
 
@@ -314,7 +351,7 @@ app() {
         case $2 in
         scripts)
             if [ -f package.json ]; then
-                if [ $( cat package.json | grep -c SCRIPTS ) == 0 ]; then
+                if [ $(cat package.json | grep -c SCRIPTS) == 0 ]; then
                     scripts=(
                         '"\\\\ SCRIPTS \\\\": "-------------------------------------------"'
                         '"+---------------+": "+-------------------------------------+"'
