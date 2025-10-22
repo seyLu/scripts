@@ -8,19 +8,21 @@ source "${_SCRIPTS_PATH}/__init__"
 # Collection of Hutility scripts
 #------------------------------------------------------------------------#
 
-readonly work_path="$(extract_value_assoc "${_PATHS}" "work")/Hutility"
+work_path="$(extract_value_assoc "${_PATHS}" "work")/Hutility"
+readonly work_path
 readonly -a valid_repos=(
     "55"
 )
-declare -l repo=$(
+repo=$(
     dir=$(basename "${PWD}")
 
-    if [[ "${valid_repos[@]}" =~ "${dir}" ]]; then
+    if [[ "${valid_repos[*]}" =~ ${dir} ]]; then
         echo "${dir}"
     else
         echo "${valid_repos[0]}"
     fi
 )
+readonly repo
 
 function main() {
     [[ $# -eq 0 ]] && list_config && return
@@ -29,7 +31,7 @@ function main() {
 }
 
 function choices() {
-    local options=$(
+    local -r options=$(
         getopt -o c:vp --long change_dir:,vpn,instaff-chrome-profiles -- "$@"
     )
 
@@ -82,6 +84,7 @@ function change_dir() {
 
 function list_valid_repos() {
     echo
+    local valid_repo
     for valid_repo in "${valid_repos[@]}"; do
         echo -e "  --> ${CYAN}${valid_repo}${END_COLOR}"
     done
@@ -91,6 +94,7 @@ function open_instaff_chrome_profiles() {
     local -r CHROME_EXE="/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
     local -ar PROFILES=(1 2 3 4)
 
+    local profile
     for profile in "${PROFILES[@]}"; do
         "${CHROME_EXE}" --profile-directory="Profile ${profile}" --incognito http://localhost:8067
     done

@@ -17,7 +17,7 @@ function main() {
     local dir="sections"
 
     [[ $# -gt 0 ]] && {
-        local options=$(getopt -o i:o:d: --long input:,output:,directory: -- "$@")
+        local -r options=$(getopt -o i:o:d: --long input:,output:,directory: -- "$@")
 
         [[ $? -ne 0 ]] && {
             echo "Incorrect options provided"
@@ -61,9 +61,9 @@ function main() {
 }
 
 function process() {
-    readonly input="$1"
-    readonly output="$2"
-    readonly dir="$3"
+    local -r input="$1"
+    local -r output="$2"
+    local -r dir="$3"
 
     # Remove the old compiled file
     [[ -f "${output}" ]] && rm "${output}"
@@ -74,8 +74,8 @@ function process() {
 
         if [[ "${line}" =~ ^#include ]]; then
             # Extract the path and filename from the "include" line
-            local path=$(echo $line | cut -d' ' -f2 | sed 's/"//g')
-            local file="${dir}/${path}.md"
+            local -r path=$(echo $line | cut -d' ' -f2 | sed 's/"//g')
+            local -r file="${dir}/${path}.md"
 
             compile "${file}" "${output}"
         fi
@@ -83,8 +83,8 @@ function process() {
 }
 
 function compile() {
-    local _file="$1"
-    local _output="$2"
+    local -r _file="$1"
+    local -r _output="$2"
 
     if [[ -f "${_file}" ]]; then
         while IFS= read file_line; do
@@ -93,7 +93,7 @@ function compile() {
 
         echo >>"$_output"
     else
-        echo "Error: "${_file}" not found"
+        echo "Error: ${_file} not found"
     fi
 }
 

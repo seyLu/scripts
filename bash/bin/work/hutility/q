@@ -15,7 +15,7 @@ function main() {
 }
 
 function choices() {
-    local options=$(
+    local -r options=$(
         getopt -o lpfci: --long log,push,safe_force_push,continue_rebase,interactive_rebase: -- "$@"
     )
 

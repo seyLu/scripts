@@ -9,9 +9,12 @@ source "${_SCRIPTS_PATH}/__init__"
 #------------------------------------------------------------------------#
 
 # Get the current year and month
-readonly YEAR=$(date +%Y)
-readonly MONTH=$(date +%m)
-readonly DAY=$(date +%d)
+YEAR=$(date +%Y)
+MONTH=$(date +%m)
+DAY=$(date +%d)
+readonly YEAR
+readonly MONTH
+readonly DAY
 
 function main() {
     [[ $# -eq 0 ]] && {

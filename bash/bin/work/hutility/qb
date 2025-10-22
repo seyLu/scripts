@@ -15,7 +15,7 @@ function main() {
 }
 
 function choices() {
-    local options=$(
+    local -r options=$(
         getopt -o c:s:S: --long create:,switch:,smart-switch: -- "$@"
     )
 

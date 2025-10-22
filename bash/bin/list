@@ -17,24 +17,23 @@ function main() {
     echo
 
     if [[ $# -eq 1 ]]; then
-        readonly key="$1"
-        readonly path=$(
+        local -r key="$1"
+        local -r path=$(
             case "${key}" in
             dir | .) pwd ;;
             scripts) echo "${_SCRIPTS_PATH}/bin" ;;
-            *) extract_value_assoc "${_PATHS}" ;;
+            *) extract_value_assoc "${_PATHS}" "${key}" ;;
             esac
         )
 
-        readonly invalid_path=$(list "${key}" "${path}" 2>/dev/null)
-        readonly reserved="dir|\.|scripts"
-
-        if [[ invalid_path && "${key}" =~ "${reserved}" ]]; then
+        if [[ -n "${path}" ]]; then
+            if [[ "${key}" != "scripts" ]]; then
+                echo "${path}"
+            fi
+            list "${key}" "${path}"
+        else
             echo "$1"
             ls "$1"
-        else
-            echo "${path}"
-            list "${key}" "${path}"
         fi
     else
         pwd
@@ -46,7 +45,7 @@ function main() {
 
 function list() {
     case "${key}" in
-    scripts) list_scripts "${path}" ;;
+    scripts) ls -fRA "${path}" ;;
     host) list_hosts "${path}" ;;
     *) ls "${path}" ;;
     esac
@@ -54,17 +53,29 @@ function list() {
 
 # List executable binaries
 function list_scripts() {
-    ls "$1" -p -I "_*" |
-        grep -v "/" |
-        format_spaces |
-        sed 's/ *$//g'
+    local f
+    for f in "$1"/*; do
+        case "$(basename "$f")" in
+        _*) continue ;;
+        esac
+
+        if [[ -d "$f" ]]; then
+            continue
+        fi
+
+        basename="$(basename "$f")"
+        cleaned="${basename%"${basename##*[^ ]}"}" # strip trailing spaces
+        printf '%s ' "$cleaned"
+    done
+    echo
 }
 
 # List local domains for localhost
 function list_hosts() {
-    readonly BOLD_YELLOW="\e[1;${YELLOW#\\e[}"
+    list -r BOLD_YELLOW="\e[1;${YELLOW#\\e[}"
 
     readarray -t lines <"$1"
+    local line
     for line in "${lines[@]}"; do
         if [[ "${line}" == "127.0.0.1   "* ]]; then
             echo -e "${BOLD_YELLOW}${line#127.0.0.1   }${END_COLOR}"

@@ -8,20 +8,23 @@ source "${_SCRIPTS_PATH}/__init__"
 # Collection of Bukas.ph scripts
 #------------------------------------------------------------------------#
 
-readonly work_path="$(extract_value_assoc "${_PATHS}" "work")/Erudifi"
-readonly -a valid_repos=(
+work_path="$(extract_value_assoc "${_PATHS}" "work")/Erudifi"
+declare -a valid_repos=(
     "mono-backend"
     "borrower-app"
 )
-declare -l repo=$(
+repo=$(
     dir=$(basename "${PWD}")
 
-    if [[ "${valid_repos[@]}" =~ "${dir}" ]]; then
+    if [[ "${valid_repos[*]}" =~ ${dir} ]]; then
         echo "${dir}"
     else
         echo "${valid_repos[0]}"
     fi
 )
+readonly work_path
+readonly valid_repos
+readonly repo
 
 function main() {
     [[ $# -eq 0 ]] && list_config && return
@@ -30,7 +33,7 @@ function main() {
 }
 
 function choices() {
-    local options=$(
+    local -r options=$(
         getopt -o c:x:b:t:X,I --long change_dir:,start:,bash:,test:,stop,install -- "$@"
     )
 
@@ -95,17 +98,18 @@ function change_dir() {
 }
 
 function docker_start() {
-    local app=$(get_app "$1")
-    [[ -z "${app}" ]] && {
+    local -r app=$(get_app "$1")
+    if [[ -z "${app}" ]]; then
         list_config
         return
-    }
+    fi
 
     case "${repo}" in
     mono-backend)
         docker-compose -f "docker-compose.${app}.yml" up -d
         ;;
     borrower-app)
+        # shellcheck source=/dev/null
         . ~/.nvm/nvm.sh
         nvm use lts/gallium
         npm run dev:web
@@ -118,17 +122,18 @@ function docker_start() {
 }
 
 function docker_bash() {
-    local backend=$(get_backend "$1")
-    [[ -z "${backend}" ]] && {
+    local -r backend=$(get_backend "$1")
+    if [[ -z "${backend}" ]]; then
         list_config
         return
-    }
+    fi
 
     docker-compose exec "${backend}" bash
 }
 
 function docker_test() {
-    local backend=$(get_backend "$1")
+    local backend
+    backend=$(get_backend "$1")
     [[ -z "${backend}" ]] && {
         list_config
         return
@@ -149,7 +154,7 @@ function docker_install() {
 }
 
 function get_app() {
-    local -l app
+    local app
 
     case "$1" in
     ph) app="bukas" ;;
@@ -160,7 +165,7 @@ function get_app() {
 }
 
 function get_backend() {
-    local -l backend
+    local backend
 
     case "$1" in
     ph) backend="backend" ;;

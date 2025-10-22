@@ -13,12 +13,12 @@ silent() {
 
 # Repeat string n times
 repeat() {
-    min=1
-    max=$1
-    string=$2
+    local -r min=1
+    local -r max=$1
+    local -r string=$2
 
-    for i in $(seq $min $max); do
-        echo -n $string
+    for i in $(seq "${min}" "${max}"); do
+        echo -n "${string}"
     done
     echo
 }
@@ -50,18 +50,18 @@ list() {
         pwdls
         ;;
     www)
-        cd /var/www
+        cd /var/www || exit
         pwdls
-        cd
+        cd || exit
         ;;
     conf)
-        cd /etc/apache2/sites-enabled
+        cd /etc/apache2/sites-enabled || exit
         pwdls
-        cd
+        cd || exit
         ;;
     host)
         echo /etc/hosts
-        cat /etc/hosts | grep ".test" | sed "s/^.*[[:blank:]]//g" | grep [[:graph:]]
+        cat /etc/hosts | grep ".test" | sed "s/^.*[[:blank:]]//g" | grep "[[:graph:]]"
         ;;
     *)
         pwd
@@ -125,7 +125,7 @@ cv() {
 
 # Create new dir on var/www and modify ownership
 www() {
-    cd /var/www
+    cd /var/www || exit
 
     case $1 in
     undo)
@@ -144,19 +144,19 @@ www() {
         sudo chmod g+s $1
         sudo chmod o-rwx $1
         list dir
-        cd $1
+        cd $1 || exit
 
         msg "Successfully created dir $1 in /var/www with appropriate permissions"
         www_cache_dir=$1
         ;;
     esac
 
-    cd
+    cd || exit
 }
 
 # Create new Apache conf file
 conf() {
-    cd /etc/apache2/sites-available
+    cd /etc/apache2/sites-available || exit
 
     case $1 in
     undo)
@@ -211,7 +211,7 @@ conf() {
         ;;
     host)
         if [ $# -lt 2 ]; then
-            cd | return
+            cd || exit
         else
             previous_mod_time=$(stat -c %Y /etc/hosts)
             append /etc/hosts "127.0.0.1\t$2.test"
@@ -224,7 +224,7 @@ conf() {
                 sleep 1
             done
 
-            list host | sed "s/^.*\t//g" | grep [[:graph:]]
+            list host | sed "s/^.*\t//g" | grep "[[:graph:]]"
 
             msg "Local domain successfully registered in localhost"
             conf_cache_file=$2
@@ -232,7 +232,7 @@ conf() {
         ;;
     rmhost)
         if [ $# -lt 2 ]; then
-            cd | return
+            cd || exit
         else
             previous_mod_time=$(stat -c %Y /etc/hosts)
             sudo sed -i.bak "/$2.test/d" /etc/hosts
@@ -279,7 +279,7 @@ conf() {
         ;;
     esac
 
-    cd
+    cd || exit
 }
 
 # Create Apache Virtual Host
@@ -319,17 +319,17 @@ pvm() {
             current)
                 apache_using_php=$(ls /etc/apache2/mods-enabled | grep "php" | sed "s/php/$pvm_bullet/g" | sed "s/[[:alpha:]]//g" | uniq | sed "s/\.$//g")
                 echo " # Current Apache PHP version"
-                echo -e "$apache_using_php" | cyan-grep [[:graph:]]
+                echo -e "$apache_using_php" | cyan-grep "[[:graph:]]"
                 ;;
             installed)
                 installed_php_list=$(sudo update-alternatives --list php | sed "s/\/usr\/bin\/php/$pvm_bullet/g" | grep "[[:digit:]].[[:digit:]]" | sort -ru)
                 echo " # Installed PHP versions"
-                echo -e "$installed_php_list" | green-grep [[:graph:]]
+                echo -e "$installed_php_list" | green-grep "[[:graph:]]"
                 ;;
             available)
                 available_php_list=$(apt-cache showpkg php | cut -d \  -f 1 | sort -ru | grep "php" | sed "s/^php/$pvm_bullet/g")
                 echo " # Available PHP versions"
-                echo -e "$available_php_list" | grep [[:graph:]]
+                echo -e "$available_php_list" | grep "[[:graph:]]"
                 ;;
             esac
             echo
@@ -351,7 +351,7 @@ app() {
         case $2 in
         scripts)
             if [ -f package.json ]; then
-                if [ $(cat package.json | grep -c SCRIPTS) == 0 ]; then
+                if [[ "$(cat package.json | grep -c SCRIPTS)" == 0 ]]; then
                     scripts=(
                         '"\\\\ SCRIPTS \\\\": "-------------------------------------------"'
                         '"+---------------+": "+-------------------------------------+"'

@@ -15,6 +15,8 @@ source "${_SCRIPTS_PATH}/__init__"
 #------------------------------------------------------------------------#
 
 function main() {
+    local temp
+
     if [[ $# -lt 1 ]]; then
         echo "At least one argument required"
     fi
@@ -26,7 +28,7 @@ function main() {
         # temp=( value value1 )
         # temp="value"
 
-        echo $temp
+        echo "${temp[@]}"
 
         # set -x
         # readonly type=$( typeof "$1" )

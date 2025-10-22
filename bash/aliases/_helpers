@@ -13,15 +13,20 @@ function format_spaces() {
 
 # Extract value using key from stringified associative array
 function extract_value_assoc() {
-    [[ $# -eq 2 ]] && key="$2"
-
-    echo "$1" |
-        awk -v key="${key}" 'match($0, key"[^:]+") {
-                print substr(\
-                    $0, RSTART + length(key) + 3, \
-                    RLENGTH - length(key) - 4 \
-                )
-            }'
+    if [[ $# -eq 2 ]]; then
+        local -r key="$2"
+        echo "$1" |
+            awk -v key="${key}" 'match($0, key"[^:]+") {
+                    print substr(\
+                        $0, RSTART + length(key) + 3, \
+                        RLENGTH - length(key) - 4 \
+                    )
+                }'
+    else
+        echo
+        echo -e "${RED}Error: extract_value_assoc need two arguments: <assoc_arr> <key>${END_COLOR}"
+        echo
+    fi
 }
 
 # Toggle _DEBUG
@@ -40,6 +45,6 @@ function debug() {
 # Initializes every other script aside from _init_
 function build() {
     # Sets Executable Permission to External Scripts
-    find "${_SCRIPTS_PATH}/bin" -maxdepth 3 -name "*" \
+    find "${_SCRIPTS_PATH}/bin" -maxdepth 4 -name "*" \
         -not -perm -u=x -exec chmod u+x {} \;
 }

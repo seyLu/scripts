@@ -40,7 +40,7 @@ function main() {
 }
 
 function choices() {
-    local options=$(
+    local -r options=$(
         getopt -o iIxXema:n --long init,down,start,stop,error_log,migrate,app:ngrok -- "$@"
     )
 
@@ -91,13 +91,13 @@ function choices() {
             ;;
         -n | --ngrok)
             ngrok http --host-header=rewrite localhost:8066 &
-            readonly ngrok_pid=$!
+            local -r ngrok_pid=$!
             (
                 sleep 5
-                readonly ngrok_url="$(curl -s http://127.0.0.1:4040/api/tunnels | grep -o --color=never '"public_url":"[^"]*' | sed 's/"public_url":"//')"
+                local -r ngrok_url="$(curl -s http://127.0.0.1:4040/api/tunnels | grep -o --color=never '"public_url":"[^"]*' | sed 's/"public_url":"//')"
 
-                readonly postback_url_env="PDFPROCESSOR_JOB_POSTBACK_URL"
-                readonly postback_url="${ngrok_url}/api/v3/pdfprocessor_postback"
+                local -r postback_url_env="PDFPROCESSOR_JOB_POSTBACK_URL"
+                local -r postback_url="${ngrok_url}/api/v3/pdfprocessor_postback"
 
                 sed -i "s|^${postback_url_env} =.*|${postback_url_env} = ${postback_url}|" "${config_ini_path}"
                 to_docker_config "${postback_url_env}"
@@ -121,8 +121,8 @@ function help() {
 }
 
 function get_env() {
-    local key="$1"
-    local line="$(grep --color=never "^${key} =" "${config_ini_path}" | tr -d "\r\n")"
+    local -r key="$1"
+    local -r line="$(grep --color=never "^${key} =" "${config_ini_path}" | tr -d "\r\n")"
 
     if [[ "${line}" =~ \| ]]; then
         echo "${line}" | sed "s/^${key} = //"
@@ -132,8 +132,8 @@ function get_env() {
 }
 
 function to_docker_config() {
-    local key="$1"
-    local val="$(get_env "$1")"
+    local -r key="$1"
+    local -r val="$(get_env "$1")"
 
     sed -i "s|^${key} =.*|${key} = ${val}|" "${config_ini_docker_path}"
 }

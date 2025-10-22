@@ -8,8 +8,10 @@ source "${_SCRIPTS_PATH}/__init__"
 # CIC specific alias
 #------------------------------------------------------------------------#
 
-readonly work_path="$(extract_value_assoc "${_PATHS}" "work")"
-readonly cic_path="${work_path}/Erudifi/CIC/cic-loantape"
+work_path="$(extract_value_assoc "${_PATHS}" "work")"
+cic_path="${work_path}/Erudifi/CIC/cic-loantape"
+readonly work_path
+readonly cic_path
 
 function main() {
     [[ $# -eq 0 ]] && {
@@ -17,7 +19,7 @@ function main() {
         return
     }
 
-    local options=$(
+    local -r options=$(
         getopt -o xdXs: --long start,dump,stop,snapshot: -- "$@"
     )
 
