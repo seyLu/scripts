@@ -3,7 +3,8 @@
 # Django manage.py
 function dj() {
     if [[ $# -gt 0 ]]; then
-        local -r options=$(
+        local options
+        options=$(
             getopt \
                 -o p:a:MmxX:ctTs \
                 --long startproject:,startapp:makemigrations:migrate:runserver:,_runserver:collectstatic,tailwind_build,tailwind_start,createsuperuser \
@@ -11,8 +12,8 @@ function dj() {
         )
 
         [[ $? -ne 0 ]] && {
-            echo "Incorrect options provided"
-            exit 1
+            log::error "incorrect options provided"
+            return
         }
 
         eval set -- "${options}"
@@ -73,15 +74,15 @@ function dj() {
                 ;;
             *)
                 echo
-                echo "Desc: Django aliases"
-                echo "Usage: TODO"
+                printf '%s\n' "Desc: Django aliases"
+                printf '%s\n' "Usage: TODO"
                 ;;
             esac
         done
     else
         echo
-        echo "Desc: Django aliases"
-        echo "Usage: TODO"
+        printf '%s\n' "Desc: Django aliases"
+        printf '%s\n' "Usage: TODO"
     fi
 }
 

@@ -40,13 +40,14 @@ function main() {
 }
 
 function choices() {
-    local -r options=$(
+    local options
+    options=$(
         getopt -o iIxXema:n --long init,down,start,stop,error_log,migrate,app:ngrok -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
-        echo "Incorrect options provided"
-        exit 1
+        log::error "incorrect options provided"
+        return
     }
 
     eval set -- "${options}"
@@ -116,7 +117,7 @@ function choices() {
 
 function help() {
     echo
-    echo "Instaff specific commands"
+    printf '%s\n' "Instaff specific commands"
     echo
 }
 
@@ -125,9 +126,9 @@ function get_env() {
     local -r line="$(grep --color=never "^${key} =" "${config_ini_path}" | tr -d "\r\n")"
 
     if [[ "${line}" =~ \| ]]; then
-        echo "${line}" | sed "s/^${key} = //"
+        printf '%s\n' "${line}" | sed "s/^${key} = //"
     else
-        echo "${line}" | sed "s|^${key} = ||"
+        printf '%s\n' "${line}" | sed "s|^${key} = ||"
     fi
 }
 

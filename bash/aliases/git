@@ -4,7 +4,7 @@ alias branch="reload; git branch --show-current"
 alias gm='f() {
     git reset --hard
 
-    if echo \"$PWD\" | grep -qE \"55\"; then
+    if printf '%s\n' \"$PWD\" | grep -qE \"55\"; then
         git checkout staging  # hutility
     else
         git checkout main
@@ -20,10 +20,10 @@ function parse_git_branch() {
         git_status=$(git status --porcelain 2>/dev/null)
 
         if [[ -n "${git_status}" ]]; then
-            echo -n "(${branch}"
-            echo -e "${YELLOW}*${END_COLOR}${RED})"
+            printf '%s' "(${branch}"
+            printf '%s' "${YELLOW}*${END_COLOR}${RED})"
         else
-            echo "(${branch})"
+            printf '%s' "(${branch})"
         fi
     fi
 }
@@ -40,15 +40,16 @@ function g() {
             git push --set-upstream origin "$(branch)"
         fi
     else
-        echo
-        echo "Usage:"
-        echo "  Current directory must be a repo"
-        echo
-        echo "Args:"
-        echo "  Commit Message"
-        echo
-        echo "Example:"
-        echo "  g \"<commit_message>\""
+        printf '\n'
+        printf '%s\n' "Usage:"
+        printf '%s\n' "  Current directory must be a repo"
+        printf '\n'
+        printf '%s\n' "Args:"
+        printf '%s\n' "  Commit Message"
+        printf '\n'
+        printf '%s\n' "Example:"
+        printf '%s\n' "  g \"<commit_message>\""
+        printf '\n'
     fi
 }
 
@@ -79,10 +80,10 @@ function gb() {
         local options
         options=$(getopt -o lc:s:f:d:m: --long list,create:,switch:,find:,delete:,move: -- "$@")
 
-        [[ $? -ne 0 ]] && {
-            echo "Incorrect options provided"
-            exit 1
-        }
+        if [[ $? -ne 0 ]]; then
+            log::error "incorrect options provided"
+            return
+        fi
 
         eval set -- "${options}"
 
@@ -97,7 +98,7 @@ function gb() {
                 if [[ -z "$(git branch --list "$2")" ]]; then
                     git pull
 
-                    if echo "$PWD" | grep -qE "55"; then
+                    if printf '%s\n' "$PWD" | grep -qE "55"; then
                         git checkout staging # hutility
                     else
                         git checkout main
@@ -121,7 +122,7 @@ function gb() {
             -d | --delete)
                 git reset --hard
 
-                if echo "$PWD" | grep -qE "55"; then
+                if printf '%s\n' "$PWD" | grep -qE "55"; then
                     git checkout staging # hutility
                 else
                     git checkout main

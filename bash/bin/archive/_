@@ -18,7 +18,7 @@ repeat() {
     local -r string=$2
 
     for i in $(seq "${min}" "${max}"); do
-        echo -n "${string}"
+        printf '%s\n' -n "${string}"
     done
     echo
 }
@@ -29,7 +29,7 @@ msg() {
 
     echo
     repeat $((${#message} + 4)) -
-    echo "+ $message +"
+    printf '%s\n' "+ $message +"
     repeat $((${#message} + 4)) -
     echo
 }
@@ -50,17 +50,17 @@ list() {
         pwdls
         ;;
     www)
-        cd /var/www || exit
+        cd /var/www || return
         pwdls
-        cd || exit
+        cd || return
         ;;
     conf)
-        cd /etc/apache2/sites-enabled || exit
+        cd /etc/apache2/sites-enabled || return
         pwdls
-        cd || exit
+        cd || return
         ;;
     host)
-        echo /etc/hosts
+        printf '%s\n' /etc/hosts
         cat /etc/hosts | grep ".test" | sed "s/^.*[[:blank:]]//g" | grep "[[:graph:]]"
         ;;
     *)
@@ -75,9 +75,9 @@ list() {
 # Append string to end of file
 append() {
     if [ $1 == nosudo ]; then
-        echo -e $3 | silent tee -a $2
+        printf '%s\n' $3 | silent tee -a $2
     else
-        echo -e $2 | silent sudo tee -a $1
+        printf '%s\n' $2 | silent sudo tee -a $1
     fi
 }
 
@@ -125,7 +125,7 @@ cv() {
 
 # Create new dir on var/www and modify ownership
 www() {
-    cd /var/www || exit
+    cd /var/www || return
 
     case $1 in
     undo)
@@ -144,19 +144,19 @@ www() {
         sudo chmod g+s $1
         sudo chmod o-rwx $1
         list dir
-        cd $1 || exit
+        cd $1 || return
 
         msg "Successfully created dir $1 in /var/www with appropriate permissions"
         www_cache_dir=$1
         ;;
     esac
 
-    cd || exit
+    cd || return
 }
 
 # Create new Apache conf file
 conf() {
-    cd /etc/apache2/sites-available || exit
+    cd /etc/apache2/sites-available || return
 
     case $1 in
     undo)
@@ -211,7 +211,7 @@ conf() {
         ;;
     host)
         if [ $# -lt 2 ]; then
-            cd || exit
+            cd || return
         else
             previous_mod_time=$(stat -c %Y /etc/hosts)
             append /etc/hosts "127.0.0.1\t$2.test"
@@ -232,7 +232,7 @@ conf() {
         ;;
     rmhost)
         if [ $# -lt 2 ]; then
-            cd || exit
+            cd || return
         else
             previous_mod_time=$(stat -c %Y /etc/hosts)
             sudo sed -i.bak "/$2.test/d" /etc/hosts
@@ -279,7 +279,7 @@ conf() {
         ;;
     esac
 
-    cd || exit
+    cd || return
 }
 
 # Create Apache Virtual Host
@@ -318,18 +318,18 @@ pvm() {
             case $2 in
             current)
                 apache_using_php=$(ls /etc/apache2/mods-enabled | grep "php" | sed "s/php/$pvm_bullet/g" | sed "s/[[:alpha:]]//g" | uniq | sed "s/\.$//g")
-                echo " # Current Apache PHP version"
-                echo -e "$apache_using_php" | cyan-grep "[[:graph:]]"
+                printf '%s\n' " # Current Apache PHP version"
+                printf '%s\n' "$apache_using_php" | cyan-grep "[[:graph:]]"
                 ;;
             installed)
                 installed_php_list=$(sudo update-alternatives --list php | sed "s/\/usr\/bin\/php/$pvm_bullet/g" | grep "[[:digit:]].[[:digit:]]" | sort -ru)
-                echo " # Installed PHP versions"
-                echo -e "$installed_php_list" | green-grep "[[:graph:]]"
+                printf '%s\n' " # Installed PHP versions"
+                printf '%s\n' "$installed_php_list" | green-grep "[[:graph:]]"
                 ;;
             available)
                 available_php_list=$(apt-cache showpkg php | cut -d \  -f 1 | sort -ru | grep "php" | sed "s/^php/$pvm_bullet/g")
-                echo " # Available PHP versions"
-                echo -e "$available_php_list" | grep "[[:graph:]]"
+                printf '%s\n' " # Available PHP versions"
+                printf '%s\n' "$available_php_list" | grep "[[:graph:]]"
                 ;;
             esac
             echo
@@ -373,8 +373,8 @@ app() {
                     for ((i = $len - 1; i >= 0; i--)); do
                         script=${scripts[i]}
 
-                        key="$(echo $script | sed -e 's/^"\(.*\)":.*/\1/')"
-                        value="$(echo $script | sed -e 's/^.*": "\(.*\)"/\1/')"
+                        key="$(printf '%s\n' $script | sed -e 's/^"\(.*\)":.*/\1/')"
+                        value="$(printf '%s\n' $script | sed -e 's/^.*": "\(.*\)"/\1/')"
 
                         sed -i "/\"scripts\": {/a \    \"$key\": \"$value\"," package.json
                     done

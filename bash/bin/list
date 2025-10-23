@@ -21,18 +21,18 @@ function main() {
         local -r path=$(
             case "${key}" in
             dir | .) pwd ;;
-            scripts) echo "${_SCRIPTS_PATH}/bin" ;;
+            scripts) printf '%s\n' "${_SCRIPTS_PATH}/bin" ;;
             *) extract_value_assoc "${_PATHS}" "${key}" ;;
             esac
         )
 
         if [[ -n "${path}" ]]; then
             if [[ "${key}" != "scripts" ]]; then
-                echo "${path}"
+                printf '%s\n' "${path}"
             fi
             list "${key}" "${path}"
         else
-            echo "$1"
+            printf '%s\n' "$1"
             ls "$1"
         fi
     else
@@ -78,7 +78,7 @@ function list_hosts() {
     local line
     for line in "${lines[@]}"; do
         if [[ "${line}" == "127.0.0.1   "* ]]; then
-            echo -e "${BOLD_YELLOW}${line#127.0.0.1   }${END_COLOR}"
+            printf '%s\n' "${BOLD_YELLOW}${line#127.0.0.1   }${END_COLOR}"
         fi
     done
 }

@@ -15,13 +15,14 @@ function main() {
 }
 
 function choices() {
-    local -r options=$(
+    local options
+    options=$(
         getopt -o lpfci: --long log,push,safe_force_push,continue_rebase,interactive_rebase: -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
-        echo "Incorrect options provided"
-        exit 1
+        log::error "incorrect options provided"
+        return
     }
 
     eval set -- "${options}"
@@ -67,7 +68,7 @@ function choices() {
 
 function help() {
     echo
-    echo "Hutility specific git alias"
+    printf '%s\n' "Hutility specific git alias"
     echo
 }
 

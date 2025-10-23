@@ -17,11 +17,12 @@ shopt -s expand_aliases
 function main() {
     [[ $# -eq 0 ]] && usage && return
 
-    local -r options=$(getopt -o k: --long kebab: -- "$@")
+    local options
+    options=$(getopt -o k: --long kebab: -- "$@")
 
     [[ $? -ne 0 ]] && {
-        echo "Incorrect options provided"
-        exit 1
+        log::error "incorrect options provided"
+        return
     }
 
     eval set -- "${options}"
@@ -45,7 +46,7 @@ function main() {
 }
 
 function kebab() {
-    echo "$1" |
+    printf '%s\n' "$1" |
         tr '[:upper:]' '[:lower:]' |
         sed 's/ /-/g' |
         sed -E 's/([a-z]+\/[0-9]+_)[^a-z0-9-]+//g' |
@@ -53,7 +54,7 @@ function kebab() {
 }
 
 function usage() {
-    echo "usage: WIP"
+    printf '%s\n' "usage: WIP"
 }
 
 main "$@"

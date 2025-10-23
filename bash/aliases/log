@@ -1,0 +1,13 @@
+#! /bin/bash
+
+function log::error() {
+    printf '%s\n\n' "${RED}error: ${1}${END_COLOR}"
+}
+
+function log::success() {
+    printf '%s\n\n' "${GREEN}success: ${1}${END_COLOR}"
+}
+
+function log::info() {
+    printf '%s\n\n' "${BLUE}info: ${1}${END_COLOR}"
+}

@@ -18,7 +18,7 @@ function main() {
     local temp
 
     if [[ $# -lt 1 ]]; then
-        echo "At least one argument required"
+        printf '%s\n' "At least one argument required"
     fi
 
     while [[ $# -gt 0 ]]; do
@@ -28,7 +28,7 @@ function main() {
         # temp=( value value1 )
         # temp="value"
 
-        echo "${temp[@]}"
+        printf '%s\n' "${temp[@]}"
 
         # set -x
         # readonly type=$( typeof "$1" )
@@ -37,9 +37,9 @@ function main() {
         #     declare -A array="${temp}"
         # fi
 
-        # echo " ${1}" | red-grep "[[:graph:]]"
+        # printf '%s\n' " ${1}" | red-grep "[[:graph:]]"
         # for key in "${!array[@]}"; do
-        #     echo " -> [${key}]=\"${array[$key]}\"" \
+        #     printf '%s\n' " -> [${key}]=\"${array[$key]}\"" \
         #         | cyan-grep -e "\[[^]]*\]"
         # done
 
@@ -54,13 +54,13 @@ function typeof() {
 
     # if [[ "${var[1]}" != "" ]]; then
     # if [[ "${var[1]}" =~ ^-?[0-9]+$ ]]; then
-    #     echo "The argument is an array."
+    #     printf '%s\n' "The argument is an array."
     # elif
-    #     echo "The argument is"
+    #     printf '%s\n' "The argument is"
     # elif [[ "${var}" =~ ^-?[0-9]+$ ]]; then
-    #     echo "The argument is an integer."
+    #     printf '%s\n' "The argument is an integer."
     # else
-    #     echo "The argument is a string."
+    #     printf '%s\n' "The argument is a string."
     # fi
     return
 }

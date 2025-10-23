@@ -17,9 +17,9 @@ repo=$(
     dir=$(basename "${PWD}")
 
     if [[ "${valid_repos[*]}" =~ ${dir} ]]; then
-        echo "${dir}"
+        printf '%s\n' "${dir}"
     else
-        echo "${valid_repos[0]}"
+        printf '%s\n' "${valid_repos[0]}"
     fi
 )
 readonly work_path
@@ -33,13 +33,14 @@ function main() {
 }
 
 function choices() {
-    local -r options=$(
+    local options
+    options=$(
         getopt -o c:x:b:t:X,I --long change_dir:,start:,bash:,test:,stop,install -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
-        echo "Incorrect options provided"
-        exit 1
+        log::error "incorrect options provided"
+        return
     }
 
     eval set -- "${options}"
@@ -149,7 +150,7 @@ function docker_install() {
         docker-compose run expo npm install
     else
         echo
-        echo "Nothing to install."
+        printf '%s\n' "Nothing to install."
     fi
 }
 
@@ -161,7 +162,7 @@ function get_app() {
     id) app="danacita" ;;
     esac
 
-    echo "${app}"
+    printf '%s\n' "${app}"
 }
 
 function get_backend() {
@@ -172,13 +173,13 @@ function get_backend() {
     id) backend="backend_danacita" ;;
     esac
 
-    echo "${backend}"
+    printf '%s\n' "${backend}"
 }
 
 function list_valid_repos() {
     echo
     for valid_repo in "${valid_repos[@]}"; do
-        echo -e "  --> ${CYAN}${valid_repo}${END_COLOR}"
+        printf '%s\n' "  --> ${CYAN}${valid_repo}${END_COLOR}"
     done
 }
 
@@ -190,7 +191,7 @@ function list_config() {
     -->    ${CYAN}Repo${END_COLOR}: ${repo}
 EOF
 
-    echo -e "${details}"
+    printf '%s\n' "${details}"
 }
 
 main "$@"

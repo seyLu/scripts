@@ -15,7 +15,7 @@ function format_spaces() {
 function extract_value_assoc() {
     if [[ $# -eq 2 ]]; then
         local -r key="$2"
-        echo "$1" |
+        printf '%s\n' "$1" |
             awk -v key="${key}" 'match($0, key"[^:]+") {
                     print substr(\
                         $0, RSTART + length(key) + 3, \
@@ -23,9 +23,7 @@ function extract_value_assoc() {
                     )
                 }'
     else
-        echo
-        echo -e "${RED}Error: extract_value_assoc need two arguments: <assoc_arr> <key>${END_COLOR}"
-        echo
+        log::error "extract_value_assoc need two arguments: <assoc_arr> <key>"
     fi
 }
 
@@ -38,7 +36,7 @@ function debug() {
         *) debug yes ;;
         esac
     else
-        echo "Exactly one argument required"
+        printf '%s\n' "Exactly one argument required"
     fi
 }
 

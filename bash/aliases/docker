@@ -9,12 +9,13 @@ function get-docker-container-id-from-tag() { docker ps --format="{{.Image}} {{.
 # docker alias
 function d() {
     if [[ $# -gt 0 ]]; then
-        local -r options=$(getopt -o CI:b:e: --long remove-stopped-containers,grep-remove-image:,build-image:,exec-on-container: -- "$@")
+        local options
+        options=$(getopt -o CI:b:e: --long remove-stopped-containers,grep-remove-image:,build-image:,exec-on-container: -- "$@")
 
-        [[ $? -ne 0 ]] && {
-            echo "Incorrect options provided"
-            exit 1
-        }
+        if [[ $? -ne 0 ]]; then
+            log::error "incorrect options provided"
+            return
+        fi
 
         eval set -- "${options}"
 
@@ -54,6 +55,6 @@ function d() {
             esac
         done
     else
-        echo "Docker alias"
+        printf '%s\n' "Docker alias"
     fi
 }

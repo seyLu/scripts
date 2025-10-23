@@ -17,11 +17,12 @@ function main() {
     local dir="sections"
 
     [[ $# -gt 0 ]] && {
-        local -r options=$(getopt -o i:o:d: --long input:,output:,directory: -- "$@")
+        local options
+        options=$(getopt -o i:o:d: --long input:,output:,directory: -- "$@")
 
         [[ $? -ne 0 ]] && {
-            echo "Incorrect options provided"
-            exit 1
+            log::error "incorrect options provided"
+            return
         }
 
         eval set -- "${options}"
@@ -74,7 +75,7 @@ function process() {
 
         if [[ "${line}" =~ ^#include ]]; then
             # Extract the path and filename from the "include" line
-            local -r path=$(echo $line | cut -d' ' -f2 | sed 's/"//g')
+            local -r path=$(printf '%s\n' $line | cut -d' ' -f2 | sed 's/"//g')
             local -r file="${dir}/${path}.md"
 
             compile "${file}" "${output}"
@@ -88,17 +89,17 @@ function compile() {
 
     if [[ -f "${_file}" ]]; then
         while IFS= read file_line; do
-            echo "${file_line}" >>"${_output}"
+            printf '%s\n' "${file_line}" >>"${_output}"
         done <"${_file}"
 
         echo >>"$_output"
     else
-        echo "Error: ${_file} not found"
+        log::error "${_file} not found"
     fi
 }
 
 function usage() {
-    echo "usage: WIP"
+    printf '%s\n' "usage: WIP"
 }
 
 main "$@"

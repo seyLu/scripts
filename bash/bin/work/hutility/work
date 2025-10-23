@@ -17,9 +17,9 @@ repo=$(
     dir=$(basename "${PWD}")
 
     if [[ "${valid_repos[*]}" =~ ${dir} ]]; then
-        echo "${dir}"
+        printf '%s\n' "${dir}"
     else
-        echo "${valid_repos[0]}"
+        printf '%s\n' "${valid_repos[0]}"
     fi
 )
 readonly repo
@@ -31,13 +31,14 @@ function main() {
 }
 
 function choices() {
-    local -r options=$(
+    local options
+    options=$(
         getopt -o c:vp --long change_dir:,vpn,instaff-chrome-profiles -- "$@"
     )
 
     [[ $? -ne 0 ]] && {
-        echo "Incorrect options provided"
-        exit 1
+        log::error "incorrect options provided"
+        return
     }
 
     eval set -- "${options}"
@@ -86,7 +87,7 @@ function list_valid_repos() {
     echo
     local valid_repo
     for valid_repo in "${valid_repos[@]}"; do
-        echo -e "  --> ${CYAN}${valid_repo}${END_COLOR}"
+        printf '%s\n' "  --> ${CYAN}${valid_repo}${END_COLOR}"
     done
 }
 
@@ -108,7 +109,7 @@ function list_config() {
     -->    ${CYAN}Repo${END_COLOR}: ${repo}
 EOF
 
-    echo -e "${details}"
+    printf '%s\n' "${details}"
 }
 
 main "$@"

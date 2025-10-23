@@ -15,20 +15,19 @@ function resume() {
         if [[ -d "${repo_path}" ]]; then
             gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${repo_path}" "${input_path}"
 
-            cd "${repo_path}" || exit
+            cd "${repo_path}" || return
             g "${commit_msg}"
 
             rm "${input_path}"
         else
             echo
-            echo "${repo_path}"
-            echo -e "${RED}Error: Repo does not exist.${ENDCOLOR}"
-            echo
+            printf '%s\n' "${repo_path}"
+            log::error "repo does not exist"
         fi
     else
         echo
-        echo "${input_path}"
-        echo -e "${RED}Error: File does not exist.${ENDCOLOR}"
+        printf '%s\n' "${input_path}"
+        log::error "file does not exist"
         echo
     fi
 }

@@ -6,6 +6,6 @@ function cs() {
         mono "${1}.exe"
     else
         echo
-        echo "Usage: WIP"
+        printf '%s\n' "Usage: WIP"
     fi
 }

@@ -15,16 +15,18 @@ shopt -s expand_aliases
 function main() {
     [[ $# -eq 0 ]] && usage && return
 
-    local -r options=$(getopt -o f:aA --long file:,array,assoc -- "$@")
-    local file
-    local format
+    local options
+    options=$(getopt -o f:aA --long file:,array,assoc -- "$@")
 
     [[ $? -ne 0 ]] && {
-        echo "Incorrect options provided"
-        exit 1
+        log::error "incorrect options provided"
+        return
     }
 
     eval set -- "${options}"
+
+    local file
+    local format
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -54,7 +56,7 @@ function main() {
     if [[ -f "${file}" ]]; then
         stringify "${format}" "${file}"
     else
-        echo -e "\nFile ${file} not found\n"
+        printf '%s\n' "\nFile ${file} not found\n"
     fi
 }
 
@@ -95,11 +97,11 @@ function stringify_assoc() {
     done
 
     local -r string
-    echo "${string}"
+    printf '%s\n' "${string}"
 }
 
 function usage() {
-    echo "usage: WIP"
+    printf '%s\n' "usage: WIP"
 }
 
 main "$@"

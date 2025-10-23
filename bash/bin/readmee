@@ -18,26 +18,26 @@ function main() {
     if [[ $# -eq 1 && "$1" == "init" ]]; then
         if [[ ! -d markdown ]]; then
             mkdir markdown
-            cd markdown || exit
+            cd markdown || return
         fi
 
         init
     elif [[ -f main.md ]]; then
         generate_readme
     elif [[ -d markdown ]]; then
-        echo "dir: markdown/ found"
+        printf '%s\n' "dir: markdown/ found"
 
         if [[ -f markdown/main.md ]]; then
-            cd markdown || exit
-            echo "file: markdown/main.md found"
+            cd markdown || return
+            printf '%s\n' "file: markdown/main.md found"
 
             generate_readme
         else
-            echo "file: markdown/main.md not found"
+            printf '%s\n' "file: markdown/main.md not found"
             init
         fi
     else
-        echo "usage: type \`readme init\` to initialize a markdown directory"
+        printf '%s\n' "usage: type \`readme init\` to initialize a markdown directory"
     fi
 }
 
@@ -48,22 +48,22 @@ function generate_readme() {
     if [[ -f compiled.md ]]; then
         mv compiled.md ../README.md
 
-        echo "Succesfully compiled markdown and generated README"
+        log::success "compiled markdown and generated README"
     else
-        echo "error: compiling failed"
+        log::error "compiling failed"
     fi
 
-    cd || exit
+    cd || return
 }
 
 # Initialize markdown dir
 function init() {
-    echo "Initializing markdown directory..."
+    printf '%s\n' "Initializing markdown directory..."
 
     touch markdown/main.md
     mkdir markdown/sections
 
-    echo "Done"
+    printf '%s\n' "Done"
 }
 
 main "$@"
