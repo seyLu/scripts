@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 alias branch="git branch --show-current"
 alias gm="git reset --hard; git checkout main"

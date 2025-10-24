@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 function resume() {
     local -r input_path="$(extract_value_assoc "${_PATHS}" "downloads")/${_RESUME_FILE}"

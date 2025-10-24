@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 shopt -s expand_aliases
 source "${_SCRIPTS_PATH}/__init__"

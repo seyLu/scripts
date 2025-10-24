@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 readonly data_global_path="${_SCRIPTS_PATH}/data/global"
 

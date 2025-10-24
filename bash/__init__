@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # shellcheck disable=SC2128
 _SCRIPTS_PATH="$(dirname -- "${BASH_SOURCE}")"

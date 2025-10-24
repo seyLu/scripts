@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 function log::error() {
     printf '%s\n\n' "${RED}error: ${1}${END_COLOR}"

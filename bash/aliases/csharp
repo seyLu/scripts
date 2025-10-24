@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 function cs() {
     if [[ -f "${1}.cs" ]]; then

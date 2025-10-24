@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # Latest Python
 function py() {

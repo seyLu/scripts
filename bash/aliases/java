@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 function jv() {
     if [[ -f "${1}.java" ]]; then
