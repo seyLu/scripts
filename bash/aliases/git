@@ -122,7 +122,9 @@ function g() {
 
 # simplify working with git branch
 function gb() {
-    reload
+    if [[ $# -eq 0 ]]; then
+        branch && return
+    fi
 
     if [[ $# -gt 0 ]]; then
         local options
@@ -190,7 +192,5 @@ function gb() {
                 ;;
             esac
         done
-    else
-        branch
     fi
 }
