@@ -22,7 +22,7 @@ function main() {
 
         [[ $? -ne 0 ]] && {
             log::error "incorrect options provided"
-            return
+            return 1
         }
 
         eval set -- "${options}"
@@ -95,6 +95,7 @@ function compile() {
         echo >>"$_output"
     else
         log::error "${_file} not found"
+        return 1
     fi
 }
 

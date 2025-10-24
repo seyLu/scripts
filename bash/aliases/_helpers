@@ -24,6 +24,7 @@ function extract_value_assoc() {
                 }'
     else
         log::error "extract_value_assoc need two arguments: <assoc_arr> <key>"
+        return 1
     fi
 }
 

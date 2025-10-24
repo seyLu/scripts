@@ -42,7 +42,11 @@ function gl() {
 }
 
 # simplify push to remote
-function gu() { [[ ! -z "$(branch)" ]] && git push --set-upstream origin "$(branch)"; }
+function gu() {
+    if [[ -n "$(branch)" ]]; then
+        git push --set-upstream origin "$(branch)"
+    fi
+}
 
 # simplify git for solo development
 function g() {
@@ -68,7 +72,7 @@ function g() {
 
         [[ $? -ne 0 ]] && {
             log::error "incorrect options provided"
-            return
+            return 1
         }
 
         eval set -- "${options}"
@@ -137,7 +141,7 @@ function gb() {
 
         if [[ $? -ne 0 ]]; then
             log::error "incorrect options provided"
-            return
+            return 1
         fi
 
         eval set -- "${options}"

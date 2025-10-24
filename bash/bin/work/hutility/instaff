@@ -47,7 +47,7 @@ function choices() {
 
     [[ $? -ne 0 ]] && {
         log::error "incorrect options provided"
-        return
+        return 1
     }
 
     eval set -- "${options}"

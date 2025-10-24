@@ -51,6 +51,7 @@ function generate_readme() {
         log::success "compiled markdown and generated README"
     else
         log::error "compiling failed"
+        return 1
     fi
 
     cd || return

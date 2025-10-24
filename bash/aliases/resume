@@ -23,11 +23,12 @@ function resume() {
             echo
             printf '%s\n' "${repo_path}"
             log::error "repo does not exist"
+            return 1
         fi
     else
         echo
         printf '%s\n' "${input_path}"
         log::error "file does not exist"
-        echo
+        return 1
     fi
 }
