@@ -1,6 +1,6 @@
 #! /bin/bash
 
-alias branch="reload; git branch --show-current"
+alias branch="git branch --show-current"
 alias gm="git reset --hard; git checkout main"
 
 # Git branch with status colors
@@ -17,31 +17,6 @@ function parse_git_branch() {
         else
             printf '%s' "(${branch})"
         fi
-    fi
-}
-
-# simplify git for solo development
-function g() {
-    if [[ $# -eq 1 ]]; then
-        git add .
-        git commit -m "$@"
-
-        if [[ "$(branch)" == "main" ]]; then
-            git push
-        else
-            git push --set-upstream origin "$(branch)"
-        fi
-    else
-        printf '\n'
-        printf '%s\n' "Usage:"
-        printf '%s\n' "  Current directory must be a repo"
-        printf '\n'
-        printf '%s\n' "Args:"
-        printf '%s\n' "  Commit Message"
-        printf '\n'
-        printf '%s\n' "Example:"
-        printf '%s\n' "  g \"<commit_message>\""
-        printf '\n'
     fi
 }
 
@@ -63,6 +38,87 @@ alias gl="git pull"
 
 # simplify push to remote
 function gu() { [[ ! -z "$(branch)" ]] && git push --set-upstream origin "$(branch)"; }
+
+# simplify git for solo development
+function g() {
+    if [[ $# -eq 0 ]]; then
+        printf '\n'
+        printf '%s\n' "Usage:"
+        printf '%s\n' "  Current directory must be a repo"
+        printf '\n'
+        printf '%s\n' "Args:"
+        printf '%s\n' "  Commit Message"
+        printf '\n'
+        printf '%s\n' "Example:"
+        printf '%s\n' "  g \"<commit_message>\""
+        printf '\n'
+        return
+    fi
+
+    if [[ $1 =~ ^- ]]; then
+        local options
+        options=$(
+            getopt -o lpfci: --long log,push,safe_force_push,continue_rebase,interactive_rebase: -- "$@"
+        )
+
+        [[ $? -ne 0 ]] && {
+            log::error "incorrect options provided"
+            return
+        }
+
+        eval set -- "${options}"
+
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+            -l | --log)
+                git log --oneline
+                break
+                ;;
+            -p | --push)
+                git push
+                break
+                ;;
+            -f | --safe_force_push)
+                git push --force-with-lease --force-if-includes
+                break
+                ;;
+            -i | --interactive_rebase)
+                git rebase -i HEAD~"$2"
+                break
+                ;;
+            -c | --continue_rebase)
+                git rebase --continue
+                break
+                ;;
+            --)
+                if [[ $# -eq 2 ]] && [[ -n "$2" ]]; then
+                    git add .
+                    git commit -m "$2"
+                else
+                    shift
+                fi
+                break
+                ;;
+            *)
+                help
+                break
+                ;;
+            esac
+        done
+    elif [[ $# -eq 1 ]]; then
+        git add .
+        git commit -m "$1"
+
+        if [[ "$(branch)" == "main" ]]; then
+            git push
+        else
+            git push --set-upstream origin "$(branch)"
+        fi
+    else
+        log::error "too many arguments or invalid usage"
+        return 1
+    fi
+}
 
 # simplify working with git branch
 function gb() {
