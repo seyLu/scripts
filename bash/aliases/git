@@ -32,9 +32,14 @@ function ga() {
 # simplify git commit
 alias gc="git commit -m"
 
-# simplify git push, pull
+# simplify git push, safe force push
 alias gp="git push"
-alias gl="git pull"
+alias gf="git push --force-with-lease --force-if-includes"
+
+# simplify git pull
+function gl() {
+    git pull "$@"
+}
 
 # simplify push to remote
 function gu() { [[ ! -z "$(branch)" ]] && git push --set-upstream origin "$(branch)"; }
