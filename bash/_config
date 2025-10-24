@@ -16,5 +16,5 @@ export _EDITOR
 : "${_RESUME_FILE:="mj_sabit_resume.pdf"}"
 export _RESUME_FILE
 
-: "${_WORK:="hutility"}"
+: "${_WORK:=""}"
 export _WORK
