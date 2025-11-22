@@ -3,6 +3,7 @@
 function resume() {
     local -r input_path="$(extract_value_assoc "${_PATHS}" "downloads")/${_RESUME_FILE}"
     local -r repo_path="$(extract_value_assoc "${_PATHS}" "repos")/seyLu.github.io"
+    local -r resume_path="${repo_path}/resume/${_RESUME_FILE}"
 
     local commit_msg="feat (resume): "
     if [[ -z "$1" ]]; then
@@ -11,24 +12,30 @@ function resume() {
         commit_msg+="$1"
     fi
 
-    if [[ -f "${input_path}" ]]; then
-        if [[ -d "${repo_path}" ]]; then
-            gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${repo_path}" "${input_path}"
-
-            cd "${repo_path}" || return
-            g "${commit_msg}"
-
-            rm "${input_path}"
-        else
-            echo
-            printf '%s\n' "${repo_path}"
-            log::error "repo does not exist"
-            return 1
-        fi
-    else
+    if [[ ! -f "${input_path}" ]]; then
         echo
         printf '%s\n' "${input_path}"
         log::error "file does not exist"
         return 1
     fi
+
+    if [[ ! -d "${repo_path}" ]]; then
+        echo
+        printf '%s\n' "${repo_path}"
+        log::error "repo does not exist"
+        return 1
+    fi
+
+    if [[ ! -f "$resume_path" ]]; then
+        echo
+        printf '%s\n' "${resume_path}"
+        log::error "file does not exist"
+        return 1
+    fi
+
+    gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${resume_path}" "${input_path}"
+    cd "${repo_path}" || return
+    g "${commit_msg}"
+
+    rm "${input_path}"
 }
