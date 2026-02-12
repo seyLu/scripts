@@ -32,6 +32,9 @@ function ga() {
 # simplify git commit
 alias gc="git commit -m"
 
+# simplify git add & commit
+alias gx="git add .; git commit -m"
+
 # simplify git push, safe force push
 alias gp="git push"
 alias gf="git push --force-with-lease --force-if-includes"

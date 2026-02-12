@@ -28,11 +28,11 @@ if [[ ! -f ~/.bashrc ]]; then
     printf '%s\n' "#!/bin/bash" >>~/.bashrc
 fi
 
-if ! grep -Fq '! alias reload &>/dev/null' ~/.bashrc; then
+if ! grep -Fq '[[ -z "$_SCRIPTS_PATH}" ]] &>/dev/null' ~/.bashrc; then
     {
         echo
         printf '%s\n' "# Initialize External Scripts"
-        printf '%s\n' '! type reload &>/dev/null' "&& source \"${ENTRY_POINT}\""
+        printf '%s\n' '[[ -z "$_SCRIPTS_PATH}" ]] &>/dev/null' "&& source \"${ENTRY_POINT}\""
         printf '%s\n' "# Enhanced colorful prompt with git branch"
         printf '%s\n' 'export PS1="\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[01;31m\] \$(parse_git_branch)\[\033[00m\]\n\$ "'
         echo
