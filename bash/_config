@@ -7,7 +7,7 @@
 : "${_DEBUG:=false}"
 export _DEBUG
 
-: "${_PYTHON:="python3.11"}"
+: "${_PYTHON:="python3.12"}"
 export _PYTHON
 
 : "${_EDITOR:="zed"}"
