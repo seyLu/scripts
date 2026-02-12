@@ -7,7 +7,7 @@
 [[ -z "$_DEBUG" ]] && _DEBUG="0"
 export _DEBUG
 
-[[ -z "$_PYTHON" ]] && _PYTHON="python3.12"
+declare _PYTHON="python3.12"
 export _PYTHON
 
 [[ -z "$_EDITOR" ]] && _EDITOR="zed"
