@@ -4,17 +4,17 @@
 # Configurations
 #------------------------------------------------------------------------#
 
-: "${_DEBUG:=false}"
+[[ -z "$_DEBUG" ]] && _DEBUG="0"
 export _DEBUG
 
-: "${_PYTHON:="python3.12"}"
+[[ -z "$_PYTHON" ]] && _PYTHON="python3.12"
 export _PYTHON
 
-: "${_EDITOR:="zed"}"
+[[ -z "$_EDITOR" ]] && _EDITOR="zed"
 export _EDITOR
 
-: "${_RESUME_FILE:="mj_sabit_resume.pdf"}"
+[[ -z "$_RESUME_FILE" ]] && _RESUME_FILE="mj_sabit_resume.pdf"
 export _RESUME_FILE
 
-: "${_WORK:=""}"
+[[ -z "$_WORK" ]] && _WORK="digitizing.io"
 export _WORK

@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC2128
 _SCRIPTS_PATH="$(dirname -- "${BASH_SOURCE}")"
-declare -rx _SCRIPTS_PATH
+export _SCRIPTS_PATH
 
 source "${_SCRIPTS_PATH}/_config"
 source "${_SCRIPTS_PATH}/_colors"

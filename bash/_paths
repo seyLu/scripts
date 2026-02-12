@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly data_global_path="${_SCRIPTS_PATH}/data/global"
+declare data_global_path="${_SCRIPTS_PATH}/data/global"
 
 # Read from Global Data text file and Populate _PATHS
 : "${_PATHS:=$(skim -Af "${data_global_path}/paths.txt")}"

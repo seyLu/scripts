@@ -1,15 +1,7 @@
 #!/bin/bash
 
 # Useful for debugging
-function reload() {
-    unset _DEBUG
-    unset _PYTHON
-    unset _EDITOR
-    unset _RESUME_FILE
-    unset _WORK
-    # shellcheck source=/dev/null
-    . ~/.bashrc
-}
+alias reload=". ~/.bashrc"
 
 # Open scripts directory on editor
 alias shell='${_EDITOR} ${_SCRIPTS_PATH}/../'

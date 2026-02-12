@@ -1,6 +1,6 @@
 #!/bin/bash
 
-readonly aliases_path="${_SCRIPTS_PATH}/aliases"
+declare aliases_path="${_SCRIPTS_PATH}/aliases"
 
 source "${aliases_path}/_"
 source "${aliases_path}/_helpers"
