@@ -140,7 +140,7 @@ function gb() {
 
     if [[ $# -gt 0 ]]; then
         local options
-        options=$(getopt -o lc:s:S:f:d:m: --long list,create:,switch:,smart-switch:,find:,delete:,move: -- "$@")
+        options=$(getopt -o lc:C:s:S:f:d:m: --long list,create:create-from-remote:,switch:,smart-switch:,find:,delete:,move: -- "$@")
 
         if [[ $? -ne 0 ]]; then
             log::error "incorrect options provided"
@@ -158,11 +158,22 @@ function gb() {
             -c | --create)
                 git reset --hard
                 if [[ -z "$(git branch --list "$2")" ]]; then
+                    git checkout main
                     git pull
 
-                    git checkout main
-
                     git checkout -b "$2"
+                else
+                    git checkout "$2"
+                fi
+                break
+                ;;
+            -C | --create-from-remote)
+                git reset --hard
+                if [[ -z "$(git branch --list "$2")" ]]; then
+                    git checkout main
+                    git pull
+
+                    git switch -c "$2" origin/"$2"
                 else
                     git checkout "$2"
                 fi
